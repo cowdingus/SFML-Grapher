@@ -21,7 +21,7 @@ sf::Vector2f CartesianCoordinateSystem::mapToWorldCoords(float x, float y) const
 
 sf::Vector2f CartesianCoordinateSystem::mapToLocalCoords(sf::Vector2f worldCoords) const
 {
-	return getTransform().getInverse().transformPoint(worldCoords);
+	return getInverseTransform().transformPoint(worldCoords);
 }
 
 sf::Vector2f CartesianCoordinateSystem::mapToLocalCoords(float x, float y) const
@@ -31,24 +31,12 @@ sf::Vector2f CartesianCoordinateSystem::mapToLocalCoords(float x, float y) const
 
 sf::FloatRect CartesianCoordinateSystem::mapToWorldCoords(const sf::FloatRect& rect) const
 {
-	const sf::Transform& at = getAxisTransform();
-
-	sf::Vector2f position = mapToWorldCoords({rect.left, rect.top});
-	sf::Vector2f size = at.transformPoint({rect.width, rect.height});
-	sf::FloatRect worldRect{position.x, position.y, size.x, size.y};
-
-	return worldRect;
+	return getTransform().transformRect(rect);
 }
 
 sf::FloatRect CartesianCoordinateSystem::mapToLocalCoords(const sf::FloatRect& rect) const
 {
-	const sf::Transform& iat = getInverseAxisTransform();
-
-	sf::Vector2f position = mapToLocalCoords({rect.left, rect.top});
-	sf::Vector2f size = iat.transformPoint({rect.width, rect.height});
-	sf::FloatRect localRect{position.x, position.y, size.x, size.y};
-
-	return localRect;
+	return getInverseTransform().transformRect(rect);
 }
 
 void CartesianCoordinateSystem::setScale(const sf::Vector2f& factors)
