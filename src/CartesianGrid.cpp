@@ -1,5 +1,6 @@
 #include "CartesianGrid.hpp"
 
+#include <SFML/Graphics/Rect.hpp>
 #include <cmath>
 
 void CartesianGrid::createHorizontalLine(float yPosition)
@@ -34,32 +35,8 @@ void CartesianGrid::createVerticalLine(float xPosition)
 	mesh.append({endPos, color});
 }
 
-void CartesianGrid::updateGrid()
+void CartesianGrid::createHorizontalLines(const sf::FloatRect& viewRegion)
 {
-	mesh.clear();
-
-	if ((viewRect.width * viewRect.height) == 0) return;
-
-	sf::FloatRect viewRegion = viewTransform.transformRect(viewRect);
-
-	// X / Vertical Lines Creation
-	if (gap.x != 0)
-	{
-		Span xViewSpan = {viewRegion.left, viewRegion.left + viewRegion.width};
-		float xGap = gap.x;
-
-		float startX = xViewSpan.from;
-		startX = (std::floor(startX / xGap) + 1) * xGap;
-
-		float endX = xViewSpan.to;
-
-		for (float xPos = startX; xPos < endX; xPos += xGap)
-		{
-			createVerticalLine(xPos);
-		}
-	}
-
-	// Y / Horizontal Lines Creation
 	if (gap.y != 0)
 	{
 		Span yViewSpan = {viewRegion.top, viewRegion.top + viewRegion.height};
@@ -75,6 +52,38 @@ void CartesianGrid::updateGrid()
 			createHorizontalLine(yPos);
 		}
 	}
+}
+
+void CartesianGrid::createVerticalLines(const sf::FloatRect& viewRegion)
+{
+	if (gap.x != 0)
+	{
+		Span xViewSpan = {viewRegion.left, viewRegion.left + viewRegion.width};
+		float xGap = gap.x;
+
+		float startX = xViewSpan.from;
+		startX = (std::floor(startX / xGap) + 1) * xGap;
+
+		float endX = xViewSpan.to;
+
+		for (float xPos = startX; xPos < endX; xPos += xGap)
+		{
+			createVerticalLine(xPos);
+		}
+	}
+}
+
+void CartesianGrid::updateGrid()
+{
+	mesh.clear();
+
+	if ((viewRect.width * viewRect.height) == 0) return;
+
+	// calculate view area taking account of zooming, translation
+	sf::FloatRect viewRegion = viewTransform.transformRect(viewRect);
+
+	createVerticalLines(viewRegion);
+	createHorizontalLines(viewRegion);
 }
 
 CartesianGrid::CartesianGrid(CartesianCoordinateSystem& ccs, sf::Vector2f gap, sf::FloatRect viewRegion)

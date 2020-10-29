@@ -27,6 +27,9 @@ private:
 	void createHorizontalLine(float yPosition);
 	void createVerticalLine(float xPosition);
 
+	void createHorizontalLines(const sf::FloatRect& viewRegion);
+	void createVerticalLines(const sf::FloatRect& viewRegion);
+
 	void updateGrid();
 
 public:
