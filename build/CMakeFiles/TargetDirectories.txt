@@ -1,3 +1,0 @@
-/home/xni/Workspace/C++/SFML_Grapher/SFML_Grapher/build/CMakeFiles/edit_cache.dir
-/home/xni/Workspace/C++/SFML_Grapher/SFML_Grapher/build/CMakeFiles/rebuild_cache.dir
-/home/xni/Workspace/C++/SFML_Grapher/SFML_Grapher/build/CMakeFiles/SFML_Grapher.dir
