@@ -4,9 +4,6 @@
 
 class CartesianCoordinateSystem : private sf::Transformable
 {
-private:
-	sf::Transformable modifier;
-
 public:
 	CartesianCoordinateSystem(
 	    const sf::Vector2f& center = {0, 0},
@@ -35,7 +32,6 @@ public:
 	using sf::Transformable::getInverseTransform;
 
 	sf::Vector2f getScale() const;
-
 
 	/*
 	 * @brief Get basis vector transform without translation
