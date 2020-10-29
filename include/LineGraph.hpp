@@ -1,0 +1,79 @@
+#pragma once
+
+#include "CartesianCoordinateSystem.hpp"
+#include "CartesianGrid.hpp"
+
+#include <SFML/Graphics.hpp>
+
+class LineGraph final : public sf::Drawable, private sf::Transformable
+{
+private:
+	CartesianCoordinateSystem ccs;
+	CartesianGrid cgrid;
+
+	std::vector<sf::Vector2f> data;
+
+	sf::VertexArray mesh = sf::VertexArray(sf::Quads);
+	sf::RenderTexture canvas;
+	sf::Sprite display;
+
+	sf::FloatRect viewRect;
+	sf::Transformable viewTransform;    // What handles the view position, scale, rotation
+	sf::Transformable stretchTransform; // Prevents the graph from stretching when zooming in/out
+
+	bool needUpdate = true;
+
+	struct Span
+	{
+		float from = 0;
+		float to = 0;
+	};
+
+	const std::array<sf::Vertex, 4> dot
+	{
+		{
+			{{-0.5, 0}, sf::Color::White},
+			{{0, 0.5}, sf::Color::White},
+			{{0.5, 0}, sf::Color::White},
+			{{0, -0.5}, sf::Color::White}
+		}
+	};
+
+	void createDot(sf::Vector2f coords);
+
+	void calculateStretchTransform(const sf::Vector2f& canvasViewSize);
+
+	void updateGraph();
+
+public:
+	LineGraph();
+
+	LineGraph(sf::Vector2f position, sf::Vector2f size, sf::Vector2f scaling = {1, 1});
+
+	sf::Vector2f getData(std::size_t index) const;
+	void addData(sf::Vector2f datum);
+	void removeData(sf::Vector2f datum);
+	void replaceData(sf::Vector2f datum, sf::Vector2f newDatum);
+	void clearData();
+	std::size_t getDataCount();
+
+	// View region, Not to be confused with size of graph
+	sf::FloatRect getViewRegion() const;
+	void setViewRegion(sf::FloatRect viewRegion);
+
+	sf::Vector2u getSize() const;
+	void setSize(sf::Vector2u size);
+
+	sf::Vector2f getZoom() const;
+	void setZoom(sf::Vector2f zoom);
+
+	sf::Vector2f getViewPosition() const;
+	void setViewPosition(const sf::Vector2f& position);
+	void moveViewPosition(const sf::Vector2f& offset);
+
+	using sf::Transformable::setPosition;
+
+	void update();
+
+	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+};
