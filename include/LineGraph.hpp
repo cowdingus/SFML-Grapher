@@ -11,7 +11,7 @@ private:
 	CartesianCoordinateSystem ccs;
 	CartesianGrid cgrid;
 
-	std::vector<sf::Vector2f> data;
+	std::vector<sf::Vector2f> graphPoints;
 
 	sf::VertexArray mesh = sf::VertexArray(sf::Quads);
 	sf::RenderTexture canvas;
@@ -50,12 +50,11 @@ public:
 
 	LineGraph(sf::Vector2f position, sf::Vector2f size, sf::Vector2f scaling = {1, 1});
 
-	sf::Vector2f getData(std::size_t index) const;
-	void addData(sf::Vector2f datum);
-	void removeData(sf::Vector2f datum);
-	void replaceData(sf::Vector2f datum, sf::Vector2f newDatum);
-	void clearData();
-	std::size_t getDataCount();
+	sf::Vector2f getPoint(std::size_t index) const;
+	std::size_t getPointsCount() const;
+	void addPoint(sf::Vector2f datum);
+	void removePoint(std::size_t index);
+	void clearPoints();
 
 	// View region, Not to be confused with size of graph
 	sf::FloatRect getViewRegion() const;

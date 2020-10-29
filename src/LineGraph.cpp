@@ -39,11 +39,11 @@ void LineGraph::updateGraph()
 {
 	mesh.clear();
 
-	// Determine how big we can see taking account of the zooming
+	// Determine how big we can see taking account of the zooming and translation
 	sf::Transform transform = viewTransform.getTransform();
 	sf::FloatRect viewRegion = transform.transformRect(viewRect);
 
-	for (auto& datum : data)
+	for (auto& datum : graphPoints)
 	{
 		Span xViewSpan {viewRegion.left, viewRegion.left + viewRegion.width};
 		Span yViewSpan {viewRegion.top, viewRegion.top + viewRegion.height};
@@ -86,33 +86,23 @@ LineGraph::LineGraph(sf::Vector2f position, sf::Vector2f size, sf::Vector2f scal
 	cgrid.setColor(sf::Color::Black);
 }
 
-sf::Vector2f LineGraph::getData(std::size_t index) const
+sf::Vector2f LineGraph::getPoint(std::size_t index) const
 {
-	return data[index];
+	return graphPoints[index];
 }
-void LineGraph::addData(sf::Vector2f datum)
+void LineGraph::addPoint(sf::Vector2f datum)
 {
-	data.emplace_back(datum.x, datum.y);
+	graphPoints.emplace_back(datum.x, datum.y);
 	needUpdate = true;
 }
-void LineGraph::removeData(sf::Vector2f datum)
+void LineGraph::clearPoints()
 {
-	data.erase(std::remove(data.begin(), data.end(), datum), data.end());
+	graphPoints.clear();
 	needUpdate = true;
 }
-void LineGraph::replaceData(sf::Vector2f datum, sf::Vector2f newDatum)
+std::size_t LineGraph::getPointsCount() const
 {
-	removeData(datum);
-	addData(newDatum);
-	needUpdate = true;
-}
-void LineGraph::clearData()
-{
-	data.clear();
-}
-std::size_t LineGraph::getDataCount()
-{
-	return data.size();
+	return graphPoints.size();
 }
 
 // View region, Not to be confused with size of graph
