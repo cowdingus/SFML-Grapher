@@ -95,6 +95,10 @@ void LineGraph::addPoint(sf::Vector2f datum)
 	graphPoints.emplace_back(datum.x, datum.y);
 	needUpdate = true;
 }
+void LineGraph::removePoint(std::size_t index)
+{
+	graphPoints.erase(graphPoints.begin() + index);
+}
 void LineGraph::clearPoints()
 {
 	graphPoints.clear();

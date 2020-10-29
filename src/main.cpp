@@ -54,16 +54,14 @@ int main()
 		std::cout << "Graph Tests" << std::endl;
 		LineGraph lg;
 
-		lg.addData({1, 1});
-		assert(lg.getData(0) == sf::Vector2f(1, 1));
-		lg.removeData({1, 1});
-		assert(lg.getDataCount() == 0);
-		lg.replaceData({1, 1}, {2, 2});
-		assert(lg.getData(0) == sf::Vector2f(2, 2));
-		lg.removeData({2, 2});
-		lg.addData({1, 1});
-		lg.replaceData({1, 1}, {2, 2});
-		assert(lg.getData(0) == sf::Vector2f(2, 2));
+		lg.addPoint({1, 1});
+		assert(lg.getPoint(0) == sf::Vector2f(1, 1));
+		lg.removePoint(0);
+		assert(lg.getPointsCount() == 0);
+		lg.addPoint({1, 1});
+		assert(lg.getPoint(0) == sf::Vector2f(1, 1));
+		lg.clearPoints();
+		assert(lg.getPointsCount() == 0);
 		std::cout << "Graph Data Insertion/Deletion Test Passed" << std::endl;
 	}
 
@@ -131,15 +129,15 @@ int main()
 	LineGraph lg({50, 50}, {400, 400}, {10, 10});
 	for (int i = 4; i <= 6; ++i)
 	{
-		lg.addData(sf::Vector2f(i, i));
+		lg.addPoint(sf::Vector2f(i, i));
 	}
 	for (int i = 7; i <= 12; ++i)
 	{
-		lg.addData(sf::Vector2f(i, 1));
+		lg.addPoint(sf::Vector2f(i, 1));
 	}
 	for (int i = 0; i <= 1000; ++i)
 	{
-		lg.addData(sf::Vector2f(-i, 1));
+		lg.addPoint(sf::Vector2f(-i, 1));
 	}
 	lg.setZoom({2, 1});
 
