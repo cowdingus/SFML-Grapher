@@ -59,7 +59,7 @@ void LineGraph::updateGraph()
 		createDot(datum);
 	}
 
-	canvas.clear(sf::Color::Cyan);
+	canvas.clear();
 	canvas.draw(grid);
 	canvas.draw(mesh);
 	canvas.display();
@@ -148,6 +148,7 @@ void LineGraph::setSize(sf::Vector2f size)
 	canvas.setView(sf::View({0, -canvasSize.y, canvasSize.x, canvasSize.y}));
 
 	calculateStretchTransform(canvasSize);
+	grid.setStretchTransform(stretchTransform.getTransform());
 
 	display.setTexture(canvas.getTexture(), true);
 	needUpdate = true;
@@ -181,6 +182,7 @@ void LineGraph::moveViewPosition(const sf::Vector2f& offset)
 {
 	viewTransform.move(offset);
 	grid.moveViewRegion(offset);
+	grid.update(true);
 	needUpdate = true;
 }
 
