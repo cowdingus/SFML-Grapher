@@ -8,8 +8,8 @@
 class LineGraph final : public sf::Drawable, private sf::Transformable
 {
 private:
-	CartesianCoordinateSystem ccs;
-	CartesianGrid cgrid;
+	CartesianCoordinateSystem coordinateSystem;
+	CartesianGrid grid;
 
 	std::vector<sf::Vector2f> graphPoints;
 
@@ -48,7 +48,7 @@ private:
 public:
 	LineGraph();
 
-	LineGraph(sf::Vector2f position, sf::Vector2f size, sf::Vector2f scaling = {1, 1});
+	LineGraph(sf::Vector2f size);
 
 	sf::Vector2f getPoint(std::size_t index) const;
 	std::size_t getPointsCount() const;
@@ -56,12 +56,15 @@ public:
 	void removePoint(std::size_t index);
 	void clearPoints();
 
+	void setUnitScaling(const sf::Vector2f& unitScaling);
+	sf::Vector2f getUnitScaling() const;
+
 	// View region, Not to be confused with size of graph
 	sf::FloatRect getViewRegion() const;
 	void setViewRegion(sf::FloatRect viewRegion);
 
 	sf::Vector2u getSize() const;
-	void setSize(sf::Vector2u size);
+	void setSize(sf::Vector2f size);
 
 	sf::Vector2f getZoom() const;
 	void setZoom(sf::Vector2f zoom);
@@ -69,6 +72,12 @@ public:
 	sf::Vector2f getViewPosition() const;
 	void setViewPosition(const sf::Vector2f& position);
 	void moveViewPosition(const sf::Vector2f& offset);
+
+	// Grid
+	void setGridGap(const sf::Vector2f& gap);
+	sf::Vector2f getGridGap() const;
+	void setGridColor(sf::Color color);
+	sf::Color getGridColor() const;
 
 	using sf::Transformable::setPosition;
 
