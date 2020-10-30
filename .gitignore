@@ -1,6 +1,10 @@
 build
+<<<<<<< Updated upstream
 debug
+=======
+>>>>>>> Stashed changes
 Debug
+debug
 Release
 compile_commands.json
 .clangd

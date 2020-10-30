@@ -125,8 +125,9 @@ int main()
 	cg.setViewRegion({0.75, 0.75, 2, 2});
 	cg.setColor(sf::Color::Blue);
 
+	LineGraph lg({400, 400});
+	lg.setPosition(100, 100);
 
-	LineGraph lg({50, 50}, {400, 400}, {10, 10});
 	for (int i = 4; i <= 6; ++i)
 	{
 		lg.addPoint(sf::Vector2f(i, i));
@@ -139,7 +140,9 @@ int main()
 	{
 		lg.addPoint(sf::Vector2f(-i, 1));
 	}
-	lg.setZoom({2, 1});
+	lg.setZoom({1, 1});
+	lg.setGridGap({2, 2});
+	lg.setUnitScaling({10, 10});
 
 	while (window.isOpen())
 	{
