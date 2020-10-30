@@ -1,4 +1,5 @@
-build/*
+build
+debug
 Debug
 Release
 compile_commands.json
