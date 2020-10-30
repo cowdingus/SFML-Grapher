@@ -3,13 +3,11 @@
 #include <SFML/Graphics/Rect.hpp>
 #include <cmath>
 
-void CartesianGrid::createHorizontalLine(float yPosition)
+void CartesianGrid::createHorizontalLine(float yPosition, const Span& xViewSpan)
 {
-	sf::FloatRect viewRegion = viewTransform.transformRect(viewRect);
-
 	sf::Vector2f startPos, endPos;
-	startPos = {viewRegion.left, yPosition};
-	endPos = {viewRegion.left + viewRegion.width, yPosition};
+	startPos = {xViewSpan.from, yPosition};
+	endPos = {xViewSpan.to, yPosition};
 
 	sf::Transform transform = ccs.getTransform() * viewTransform.getInverse() * stretchTransform;
 	startPos = transform.transformPoint(startPos);
@@ -19,13 +17,11 @@ void CartesianGrid::createHorizontalLine(float yPosition)
 	mesh.append({endPos, color});
 }
 
-void CartesianGrid::createVerticalLine(float xPosition)
+void CartesianGrid::createVerticalLine(float xPosition, const Span& yViewSpan)
 {
-	sf::FloatRect viewRegion = viewTransform.transformRect(viewRect);
-
 	sf::Vector2f startPos, endPos;
-	startPos = {xPosition, viewRegion.top};
-	endPos = {xPosition, viewRegion.top + viewRegion.height};
+	startPos = {xPosition, yViewSpan.from};
+	endPos = {xPosition, yViewSpan.to};
 
 	sf::Transform transform = ccs.getTransform() * viewTransform.getInverse() * stretchTransform;
 	startPos = transform.transformPoint(startPos);
@@ -40,7 +36,8 @@ void CartesianGrid::createHorizontalLines(const sf::FloatRect& viewRegion)
 	if (gap.y != 0)
 	{
 		Span yViewSpan = {viewRegion.top, viewRegion.top + viewRegion.height};
-		float yGap = gap.y;
+		Span xViewSpan = {viewRegion.left, viewRegion.left + viewRegion.width};
+		const float yGap = gap.y;
 
 		float startY = yViewSpan.from;
 		startY = (std::floor(startY / yGap) + 1) * yGap;
@@ -49,7 +46,7 @@ void CartesianGrid::createHorizontalLines(const sf::FloatRect& viewRegion)
 
 		for (float yPos = startY; yPos < endY; yPos += yGap)
 		{
-			createHorizontalLine(yPos);
+			createHorizontalLine(yPos, xViewSpan);
 		}
 	}
 }
@@ -59,7 +56,8 @@ void CartesianGrid::createVerticalLines(const sf::FloatRect& viewRegion)
 	if (gap.x != 0)
 	{
 		Span xViewSpan = {viewRegion.left, viewRegion.left + viewRegion.width};
-		float xGap = gap.x;
+		Span yViewSpan = {viewRegion.top, viewRegion.top + viewRegion.height};
+		const float xGap = gap.x;
 
 		float startX = xViewSpan.from;
 		startX = (std::floor(startX / xGap) + 1) * xGap;
@@ -68,7 +66,7 @@ void CartesianGrid::createVerticalLines(const sf::FloatRect& viewRegion)
 
 		for (float xPos = startX; xPos < endX; xPos += xGap)
 		{
-			createVerticalLine(xPos);
+			createVerticalLine(xPos, yViewSpan);
 		}
 	}
 }
@@ -99,7 +97,7 @@ sf::Vector2f CartesianGrid::getGap() const
 void CartesianGrid::setGap(const sf::Vector2f& gap)
 {
 	this->gap = gap;
-	updateGrid();
+	needUpdate = true;
 }
 
 const sf::FloatRect& CartesianGrid::getViewRegion() const
@@ -109,17 +107,17 @@ const sf::FloatRect& CartesianGrid::getViewRegion() const
 void CartesianGrid::setViewRegion(const sf::FloatRect& viewRegion)
 {
 	this->viewRect = viewRegion;
-	updateGrid();
+	needUpdate = true;
 }
 void CartesianGrid::setViewRegion(const sf::Vector2f& topLeftPosition, const sf::Vector2f& size)
 {
 	this->viewRect = {topLeftPosition.x, topLeftPosition.y, size.x, size.y};
-	updateGrid();
+	needUpdate = true;
 }
 void CartesianGrid::moveViewRegion(const sf::Vector2f& offset)
 {
 	viewTransform.translate(offset);
-	updateGrid();
+	needUpdate = true;
 }
 
 sf::Color CartesianGrid::getColor() const
@@ -135,6 +133,14 @@ void CartesianGrid::setColor(sf::Color color)
 	}
 }
 
+void CartesianGrid::update(bool force)
+{
+	if (needUpdate || force)
+	{
+		updateGrid();
+	}
+}
+
 void CartesianGrid::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	target.draw(mesh, states);
@@ -143,8 +149,10 @@ void CartesianGrid::draw(sf::RenderTarget& target, sf::RenderStates states) cons
 void CartesianGrid::setViewTransform(const sf::Transform& transform)
 {
 	viewTransform = transform;
+	needUpdate = true;
 }
 void CartesianGrid::setStretchTransform(const sf::Transform& transform)
 {
 	stretchTransform = transform;
+	needUpdate = true;
 }

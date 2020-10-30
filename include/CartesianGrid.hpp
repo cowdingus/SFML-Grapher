@@ -18,14 +18,16 @@ private:
 	sf::Transform viewTransform;
 	sf::Transform stretchTransform;
 
+	bool needUpdate = true;
+
 	struct Span
 	{
 		float from = 0;
 		float to = 0;
 	};
 
-	void createHorizontalLine(float yPosition);
-	void createVerticalLine(float xPosition);
+	void createHorizontalLine(float yPosition, const Span& xViewSpan);
+	void createVerticalLine(float xPosition, const Span& yViewSpan);
 
 	void createHorizontalLines(const sf::FloatRect& viewRegion);
 	void createVerticalLines(const sf::FloatRect& viewRegion);
@@ -46,6 +48,7 @@ public:
 	sf::Color getColor() const;
 	void setColor(sf::Color color);
 
+	void update(bool force = false);
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 	void setViewTransform(const sf::Transform& transform);
