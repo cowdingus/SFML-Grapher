@@ -138,6 +138,7 @@ void CartesianGrid::update(bool force)
 	if (needUpdate || force)
 	{
 		updateGrid();
+		needUpdate = false;
 	}
 }
 
