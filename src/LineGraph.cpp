@@ -63,8 +63,6 @@ void LineGraph::updateGraph()
 	canvas.draw(grid);
 	canvas.draw(mesh);
 	canvas.display();
-
-	needUpdate = false;
 }
 
 LineGraph::LineGraph()
@@ -182,17 +180,17 @@ void LineGraph::moveViewPosition(const sf::Vector2f& offset)
 {
 	viewTransform.move(offset);
 	grid.moveViewRegion(offset);
-	grid.update(true);
 	needUpdate = true;
 }
 
 void LineGraph::update()
 {
+	grid.update();
 	if (needUpdate)
 	{
 		updateGraph();
+		needUpdate = false;
 	}
-	grid.update();
 }
 
 void LineGraph::setGridGap(const sf::Vector2f& gap)
