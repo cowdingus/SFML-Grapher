@@ -1,8 +1,7 @@
 build
-<<<<<<< Updated upstream
-debug
-=======
->>>>>>> Stashed changes
+.nvimrc
+.vimrc
+.exrc
 Debug
 debug
 Release
