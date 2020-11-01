@@ -44,6 +44,7 @@ private:
 	void calculateStretchTransform(const sf::Vector2f& canvasViewSize);
 
 	void updateGraph();
+	void updateCanvas();
 
 public:
 	LineGraph();

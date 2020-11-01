@@ -58,7 +58,10 @@ void LineGraph::updateGraph()
 		// If in sight (visible), draw it
 		createDot(datum);
 	}
+}
 
+void LineGraph::updateCanvas()
+{
 	canvas.clear();
 	canvas.draw(grid);
 	canvas.draw(mesh);
@@ -185,12 +188,14 @@ void LineGraph::moveViewPosition(const sf::Vector2f& offset)
 
 void LineGraph::update()
 {
-	grid.update();
 	if (needUpdate)
 	{
 		updateGraph();
 		needUpdate = false;
 	}
+	grid.update();
+
+	updateCanvas();
 }
 
 void LineGraph::setGridGap(const sf::Vector2f& gap)
