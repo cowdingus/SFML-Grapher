@@ -7,3 +7,4 @@ debug
 Release
 compile_commands.json
 .clangd
+test
