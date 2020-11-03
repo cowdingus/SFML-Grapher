@@ -2,17 +2,26 @@
 #include "CartesianGrid.hpp"
 #include <SFML/System/Vector2.hpp>
 
-void LineGraph::createDot(sf::Vector2f coords)
+sf::Vector2f LineGraph::getPointPosition(sf::Vector2f coords) const
 {
-	auto newDot = dot;
-
-	// Determine dot position
 	sf::Transform transform =
 	    coordinateSystem.getTransform() * viewTransform.getInverseTransform() * stretchTransform.getTransform();
 	coords = transform.transformPoint(coords);
+	return coords;
+}
 
+void LineGraph::createPoint(const sf::Vector2f& coords)
+{
+	auto newDot = dot;
+
+	// Get the point's position on the graph, taking account of
+	// zooming/translate/rotate transform
+	sf::Vector2f pointPosition = getPointPosition(coords);
+
+	// Because the dot is so small, we scale it by 9 so it can be seen
+	// then we move the dot to the point's position
 	sf::Transform dotTransform;
-	dotTransform.translate(coords);
+	dotTransform.translate(pointPosition);
 	dotTransform.scale({9, 9});
 
 	// Transform the dot to the desired coords
@@ -26,6 +35,9 @@ void LineGraph::createDot(sf::Vector2f coords)
 
 void LineGraph::calculateStretchTransform(const sf::Vector2f& canvasViewSize)
 {
+	// To achieve desired effect (zooming / resizing without stretching its content)
+	// we use this, a stretch transform.
+
 	sf::Vector2f canvasNormalSize =
 	    coordinateSystem.getInverseAxisTransform().transformPoint(canvasViewSize);
 
@@ -56,7 +68,7 @@ void LineGraph::updateGraph()
 			continue;
 
 		// If in sight (visible), draw it
-		createDot(datum);
+		createPoint(datum);
 	}
 }
 
@@ -117,7 +129,9 @@ sf::FloatRect LineGraph::getViewRegion() const
 void LineGraph::setViewRegion(sf::FloatRect viewRegion)
 {
 	viewRect = viewRegion;
+	calculateStretchTransform(static_cast<sf::Vector2f>(canvas.getSize()));
 	grid.setViewRegion(viewRegion);
+	grid.setStretchTransform(stretchTransform.getTransform());
 	needUpdate = true;
 }
 
@@ -144,7 +158,8 @@ void LineGraph::setSize(sf::Vector2f size)
 	}
 
 	// Instead of using view to zoom or translate, we use our own transform
-	// to pervents stretching. We set the view to the canvas' size.
+	// to pervents stretching, that's why we set the view to the default size (canvas size).
+	// take a look at #calculateStretchTransform(canvasSize) method
 	sf::Vector2f canvasSize = static_cast<sf::Vector2f>(canvas.getSize());
 	canvas.setView(sf::View({0, -canvasSize.y, canvasSize.x, canvasSize.y}));
 
@@ -182,7 +197,7 @@ void LineGraph::setViewPosition(const sf::Vector2f& position)
 void LineGraph::moveViewPosition(const sf::Vector2f& offset)
 {
 	viewTransform.move(offset);
-	grid.moveViewRegion(offset);
+	grid.setViewTransform(viewTransform.getTransform());
 	needUpdate = true;
 }
 

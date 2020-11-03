@@ -140,7 +140,7 @@ int main()
 	{
 		lg.addPoint(sf::Vector2f(-i, 1));
 	}
-	lg.setZoom({1, 1});
+	lg.setZoom({2, 1});
 	lg.setGridGap({2, 2});
 	lg.setUnitScaling({10, 10});
 

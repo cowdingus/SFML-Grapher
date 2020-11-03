@@ -39,7 +39,8 @@ private:
 		}
 	};
 
-	void createDot(sf::Vector2f coords);
+	sf::Vector2f getPointPosition(sf::Vector2f coords) const;
+	void createPoint(const sf::Vector2f& coords);
 
 	void calculateStretchTransform(const sf::Vector2f& canvasViewSize);
 
