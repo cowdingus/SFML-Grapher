@@ -3,6 +3,8 @@
 #include "LineGraph.hpp"
 
 #include <SFML/Graphics.hpp>
+#include <SFML/Graphics/Color.hpp>
+#include <SFML/Graphics/RectangleShape.hpp>
 #include <iostream>
 #include <cassert>
 
@@ -128,21 +130,30 @@ int main()
 	LineGraph lg({400, 400});
 	lg.setPosition(100, 100);
 
-	for (int i = 4; i <= 6; ++i)
-	{
-		lg.addPoint(sf::Vector2f(i, i));
-	}
-	for (int i = 7; i <= 12; ++i)
-	{
-		lg.addPoint(sf::Vector2f(i, 1));
-	}
-	for (int i = 0; i <= 1000; ++i)
-	{
-		lg.addPoint(sf::Vector2f(-i, 1));
-	}
-	lg.setZoom({2, 1});
+	lg.addPoint({0, 0});
+	lg.addPoint({-1, 0});
+	lg.addPoint({1, 0});
+	lg.addPoint({0, -1});
+	lg.addPoint({0, 1});
+
+	lg.setZoom({2, 2});
 	lg.setGridGap({2, 2});
 	lg.setUnitScaling({10, 10});
+	lg.setViewRegion({0, 0, 8, 8});
+	lg.setSize({200, 200});
+	lg.setGridColor(sf::Color(100, 100, 100));
+	lg.setViewPosition({-2, -2});
+
+	lg.setViewRegion({0, 0, 8, 8});
+	lg.setViewPosition({-2, -2});
+
+
+	sf::RectangleShape boundingBox;
+	boundingBox.setSize(static_cast<sf::Vector2f>(lg.getSize()));
+	boundingBox.setPosition({100, 100});
+	boundingBox.setOutlineThickness(1);
+	boundingBox.setOutlineColor(sf::Color::Magenta);
+	boundingBox.setFillColor(sf::Color(0, 0, 0, 0));
 
 	while (window.isOpen())
 	{
@@ -209,6 +220,7 @@ int main()
 		window.draw(cga);
 		window.draw(cg);
 		window.draw(lg);
+		window.draw(boundingBox);
 		window.display();
 	}
 }
