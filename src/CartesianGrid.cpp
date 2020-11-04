@@ -9,7 +9,8 @@ void CartesianGrid::createHorizontalLine(float yPosition, const Span& xViewSpan)
 	startPos = {xViewSpan.from, yPosition};
 	endPos = {xViewSpan.to, yPosition};
 
-	sf::Transform transform = ccs.getTransform() * viewTransform.getInverse() * stretchTransform;
+	//sf::Transform transform = ccs.getTransform() * viewTransform.getInverse() * stretchTransform;
+	sf::Transform transform = ccs.getTransform() * stretchTransform * viewTransform.getInverse();
 	startPos = transform.transformPoint(startPos);
 	endPos = transform.transformPoint(endPos);
 
@@ -23,7 +24,8 @@ void CartesianGrid::createVerticalLine(float xPosition, const Span& yViewSpan)
 	startPos = {xPosition, yViewSpan.from};
 	endPos = {xPosition, yViewSpan.to};
 
-	sf::Transform transform = ccs.getTransform() * viewTransform.getInverse() * stretchTransform;
+	//sf::Transform transform = ccs.getTransform() * viewTransform.getInverse() * stretchTransform;
+	sf::Transform transform = ccs.getTransform() * stretchTransform * viewTransform.getInverse();
 	startPos = transform.transformPoint(startPos);
 	endPos = transform.transformPoint(endPos);
 
