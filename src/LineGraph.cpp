@@ -4,8 +4,10 @@
 
 sf::Vector2f LineGraph::getPointPosition(sf::Vector2f coords) const
 {
+	//sf::Transform transform =
+	//    coordinateSystem.getTransform() * viewTransform.getInverseTransform() * stretchTransform.getTransform();
 	sf::Transform transform =
-	    coordinateSystem.getTransform() * viewTransform.getInverseTransform() * stretchTransform.getTransform();
+	    coordinateSystem.getTransform() * stretchTransform.getTransform() * viewTransform.getInverseTransform();
 	coords = transform.transformPoint(coords);
 	return coords;
 }
@@ -33,7 +35,7 @@ void LineGraph::createPoint(const sf::Vector2f& coords)
 	}
 }
 
-void LineGraph::calculateStretchTransform(const sf::Vector2f& canvasViewSize)
+void LineGraph::recalculateStretchTransform(const sf::Vector2f& canvasViewSize)
 {
 	// To achieve desired effect (zooming / resizing without stretching its content)
 	// we use this, a stretch transform.
@@ -129,8 +131,8 @@ sf::FloatRect LineGraph::getViewRegion() const
 void LineGraph::setViewRegion(sf::FloatRect viewRegion)
 {
 	viewRect = viewRegion;
-	calculateStretchTransform(static_cast<sf::Vector2f>(canvas.getSize()));
 	grid.setViewRegion(viewRegion);
+	recalculateStretchTransform(static_cast<sf::Vector2f>(canvas.getSize()));
 	grid.setStretchTransform(stretchTransform.getTransform());
 	needUpdate = true;
 }
@@ -163,7 +165,7 @@ void LineGraph::setSize(sf::Vector2f size)
 	sf::Vector2f canvasSize = static_cast<sf::Vector2f>(canvas.getSize());
 	canvas.setView(sf::View({0, -canvasSize.y, canvasSize.x, canvasSize.y}));
 
-	calculateStretchTransform(canvasSize);
+	recalculateStretchTransform(canvasSize);
 	grid.setStretchTransform(stretchTransform.getTransform());
 
 	display.setTexture(canvas.getTexture(), true);
@@ -190,7 +192,7 @@ sf::Vector2f LineGraph::getViewPosition() const
 void LineGraph::setViewPosition(const sf::Vector2f& position)
 {
 	viewTransform.setPosition(position);
-	grid.setViewRegion(viewRect);
+	grid.setViewTransform(viewTransform.getTransform());
 	needUpdate = true;
 }
 

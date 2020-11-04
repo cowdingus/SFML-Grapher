@@ -42,7 +42,7 @@ private:
 	sf::Vector2f getPointPosition(sf::Vector2f coords) const;
 	void createPoint(const sf::Vector2f& coords);
 
-	void calculateStretchTransform(const sf::Vector2f& canvasViewSize);
+	void recalculateStretchTransform(const sf::Vector2f& canvasViewSize);
 
 	void updateGraph();
 	void updateCanvas();
