@@ -5,6 +5,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
+#include <SFML/Window/Keyboard.hpp>
 #include <iostream>
 #include <cassert>
 
@@ -139,14 +140,13 @@ int main()
 	lg.setZoom({2, 2});
 	lg.setGridGap({2, 2});
 	lg.setUnitScaling({10, 10});
-	lg.setViewRegion({0, 0, 8, 8});
 	lg.setSize({200, 200});
 	lg.setGridColor(sf::Color(100, 100, 100));
-	lg.setViewPosition({-2, -2});
 
-	lg.setViewRegion({0, 0, 8, 8});
 	lg.setViewPosition({-2, -2});
+	lg.setViewSize({8, 8});
 
+	lg.setViewRect({-2, -2, 8, 8});
 
 	sf::RectangleShape boundingBox;
 	boundingBox.setSize(static_cast<sf::Vector2f>(lg.getSize()));
@@ -154,6 +154,30 @@ int main()
 	boundingBox.setOutlineThickness(1);
 	boundingBox.setOutlineColor(sf::Color::Magenta);
 	boundingBox.setFillColor(sf::Color(0, 0, 0, 0));
+
+	sf::Font arial;
+	if (!arial.loadFromFile("debug/Arial.ttf"))
+	{
+		sf::err() << "Error: Can't load font file" << std::endl;
+	}
+
+	sf::Text keymapGuide;
+	keymapGuide.setString(
+	    "[M] to zoom in\n"
+	    "[N] to zoom out\n"
+	    "[Arrow keys] to move graph\n"
+	    "[W | A | S | D] to move view\n"
+	);
+	keymapGuide.setFont(arial);
+	keymapGuide.setCharacterSize(12);
+	keymapGuide.setFillColor(sf::Color::White);
+
+	keymapGuide.setPosition(
+	{
+		window.getSize().x - keymapGuide.getGlobalBounds().width,
+		window.getSize().y - keymapGuide.getGlobalBounds().height
+	}
+	);
 
 	while (window.isOpen())
 	{
@@ -170,38 +194,43 @@ int main()
 			case sf::Event::KeyPressed:
 			{
 				sf::View newView = window.getView();
-				if (event.key.code == sf::Keyboard::W)
+
+				switch (event.key.code)
 				{
+				case sf::Keyboard::W:
 					newView.move(0, -10);
-				}
-				else if (event.key.code == sf::Keyboard::S)
-				{
+					break;
+				case sf::Keyboard::S:
 					newView.move(0, 10);
-				}
-				else if (event.key.code == sf::Keyboard::A)
-				{
+					break;
+				case sf::Keyboard::A:
 					newView.move(-10, 0);
-				}
-				else if (event.key.code == sf::Keyboard::D)
-				{
+					break;
+				case sf::Keyboard::D:
 					newView.move(10, 0);
-				}
-				else if (event.key.code == sf::Keyboard::Up)
-				{
+					break;
+				case sf::Keyboard::Up:
 					lg.moveViewPosition({0, 0.1});
-				}
-				else if (event.key.code == sf::Keyboard::Down)
-				{
+					break;
+				case sf::Keyboard::Down:
 					lg.moveViewPosition({0, -0.1});
-				}
-				else if (event.key.code == sf::Keyboard::Right)
-				{
-					lg.moveViewPosition({0.1, 0});
-				}
-				else if (event.key.code == sf::Keyboard::Left)
-				{
+					break;
+				case sf::Keyboard::Left:
 					lg.moveViewPosition({-0.1, 0});
+					break;
+				case sf::Keyboard::Right:
+					lg.moveViewPosition({0.1, 0});
+					break;
+				case sf::Keyboard::M:
+					if (lg.getZoom().x < 3 || lg.getZoom().y < 3) lg.setZoom(lg.getZoom() + sf::Vector2f(0.1f, 0.1f));
+					break;
+				case sf::Keyboard::N:
+					if (lg.getZoom().x > 1 || lg.getZoom().y > 1) lg.setZoom(lg.getZoom() - sf::Vector2f(0.1f, 0.1f));
+					break;
+				default:
+					break;
 				}
+
 				window.setView(newView);
 				break;
 			}
@@ -221,6 +250,7 @@ int main()
 		window.draw(cg);
 		window.draw(lg);
 		window.draw(boundingBox);
+		window.draw(keymapGuide);
 		window.display();
 	}
 }
