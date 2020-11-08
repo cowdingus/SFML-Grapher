@@ -90,7 +90,7 @@ LineGraph::LineGraph()
 LineGraph::LineGraph(sf::Vector2f size)
 	: grid(coordinateSystem)
 {
-	setViewRegion({0, 0, size.x, size.y});
+	setViewSize(size);
 	setSize(size);
 }
 
@@ -122,25 +122,19 @@ std::size_t LineGraph::getPointsCount() const
 	return graphPoints.size();
 }
 
-// View region, Not to be confused with size of graph
-sf::FloatRect LineGraph::getViewRegion() const
+void LineGraph::setViewSize(const sf::Vector2f& size)
 {
-	return viewRect;
-}
-
-void LineGraph::setViewRegion(sf::FloatRect viewRegion)
-{
-	viewRect = viewRegion;
-	grid.setViewRegion(viewRegion);
+	viewRect.width = size.x;
+	viewRect.height = size.y;
+	grid.setViewRegion(viewRect);
 	recalculateStretchTransform(static_cast<sf::Vector2f>(canvas.getSize()));
 	grid.setStretchTransform(stretchTransform.getTransform());
 	needUpdate = true;
 }
 
-// Size of the graph
-sf::Vector2u LineGraph::getSize() const
+sf::Vector2f LineGraph::getViewSize() const
 {
-	return canvas.getSize();
+	return {viewRect.width, viewRect.height};
 }
 
 void LineGraph::setSize(sf::Vector2f size)
@@ -172,9 +166,9 @@ void LineGraph::setSize(sf::Vector2f size)
 	needUpdate = true;
 }
 
-sf::Vector2f LineGraph::getZoom() const
+sf::Vector2u LineGraph::getSize() const
 {
-	return viewTransform.getScale();
+	return canvas.getSize();
 }
 
 void LineGraph::setZoom(sf::Vector2f zoom)
@@ -184,9 +178,22 @@ void LineGraph::setZoom(sf::Vector2f zoom)
 	needUpdate = true;
 }
 
-sf::Vector2f LineGraph::getViewPosition() const
+sf::Vector2f LineGraph::getZoom() const
 {
-	return viewTransform.getPosition();
+	return {1 / viewTransform.getScale().x, 1 / viewTransform.getScale().y};
+}
+
+void LineGraph::setViewRect(const sf::FloatRect& rect)
+{
+	setViewPosition({rect.left, rect.top});
+	setViewSize({rect.width, rect.height});
+}
+
+sf::FloatRect LineGraph::getViewRect() const
+{
+	auto viewPosition = getViewPosition();
+	auto viewSize = getViewSize();
+	return {viewPosition.x, viewPosition.y, viewSize.x, viewSize.y};
 }
 
 void LineGraph::setViewPosition(const sf::Vector2f& position)
@@ -196,23 +203,16 @@ void LineGraph::setViewPosition(const sf::Vector2f& position)
 	needUpdate = true;
 }
 
+sf::Vector2f LineGraph::getViewPosition() const
+{
+	return viewTransform.getPosition();
+}
+
 void LineGraph::moveViewPosition(const sf::Vector2f& offset)
 {
 	viewTransform.move(offset);
 	grid.setViewTransform(viewTransform.getTransform());
 	needUpdate = true;
-}
-
-void LineGraph::update()
-{
-	if (needUpdate)
-	{
-		updateGraph();
-		needUpdate = false;
-	}
-	grid.update();
-
-	updateCanvas();
 }
 
 void LineGraph::setGridGap(const sf::Vector2f& gap)
@@ -244,6 +244,18 @@ void LineGraph::setUnitScaling(const sf::Vector2f &unitScaling)
 sf::Vector2f LineGraph::getUnitScaling() const
 {
 	return coordinateSystem.getScale();
+}
+
+void LineGraph::update()
+{
+	if (needUpdate)
+	{
+		updateGraph();
+		needUpdate = false;
+	}
+	grid.update();
+
+	updateCanvas();
 }
 
 void LineGraph::draw(sf::RenderTarget& target, sf::RenderStates states) const

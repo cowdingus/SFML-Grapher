@@ -61,23 +61,26 @@ public:
 	void setUnitScaling(const sf::Vector2f& unitScaling);
 	sf::Vector2f getUnitScaling() const;
 
-	// View region, Not to be confused with size of graph
-	sf::FloatRect getViewRegion() const;
-	void setViewRegion(sf::FloatRect viewRegion);
-
-	sf::Vector2u getSize() const;
 	void setSize(sf::Vector2f size);
+	sf::Vector2u getSize() const;
 
-	sf::Vector2f getZoom() const;
 	void setZoom(sf::Vector2f zoom);
+	sf::Vector2f getZoom() const;
 
-	sf::Vector2f getViewPosition() const;
+	void setViewRect(const sf::FloatRect& rect);
+	sf::FloatRect getViewRect() const;
+
 	void setViewPosition(const sf::Vector2f& position);
+	sf::Vector2f getViewPosition() const;
+
+	void setViewSize(const sf::Vector2f& size);
+	sf::Vector2f getViewSize() const;
+
 	void moveViewPosition(const sf::Vector2f& offset);
 
-	// Grid
 	void setGridGap(const sf::Vector2f& gap);
 	sf::Vector2f getGridGap() const;
+
 	void setGridColor(sf::Color color);
 	sf::Color getGridColor() const;
 
