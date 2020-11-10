@@ -6,6 +6,26 @@
 
 class CartesianGrid : public sf::Drawable
 {
+public:
+	CartesianGrid(CartesianCoordinateSystem& ccs, sf::Vector2f gap = {1, 1}, sf::FloatRect viewRegion = {0, 0, 0, 0});
+
+	sf::Vector2f getGap() const;
+	void setGap(const sf::Vector2f& gap);
+
+	const sf::FloatRect& getViewRegion() const;
+	void setViewRegion(const sf::FloatRect& viewRegion);
+	void setViewRegion(const sf::Vector2f& topLeftPosition, const sf::Vector2f& size);
+	void moveViewRegion(const sf::Vector2f& offset);
+
+	sf::Color getColor() const;
+	void setColor(sf::Color color);
+
+	void update(bool force = false);
+	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+
+	void setViewTransform(const sf::Transform& transform);
+	void setStretchTransform(const sf::Transform& transform);
+
 private:
 	CartesianCoordinateSystem& ccs;
 	sf::FloatRect viewRect;
@@ -33,24 +53,4 @@ private:
 	void createVerticalLines(const sf::FloatRect& viewRegion);
 
 	void updateGrid();
-
-public:
-	CartesianGrid(CartesianCoordinateSystem& ccs, sf::Vector2f gap = {1, 1}, sf::FloatRect viewRegion = {0, 0, 0, 0});
-
-	sf::Vector2f getGap() const;
-	void setGap(const sf::Vector2f& gap);
-
-	const sf::FloatRect& getViewRegion() const;
-	void setViewRegion(const sf::FloatRect& viewRegion);
-	void setViewRegion(const sf::Vector2f& topLeftPosition, const sf::Vector2f& size);
-	void moveViewRegion(const sf::Vector2f& offset);
-
-	sf::Color getColor() const;
-	void setColor(sf::Color color);
-
-	void update(bool force = false);
-	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
-
-	void setViewTransform(const sf::Transform& transform);
-	void setStretchTransform(const sf::Transform& transform);
 };
