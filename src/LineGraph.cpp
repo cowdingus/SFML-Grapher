@@ -1,5 +1,6 @@
 #include "LineGraph.hpp"
 #include "CartesianGrid.hpp"
+
 #include <SFML/System/Vector2.hpp>
 
 sf::Vector2f LineGraph::getPointPosition(sf::Vector2f coords) const

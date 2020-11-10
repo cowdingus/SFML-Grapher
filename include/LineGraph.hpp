@@ -5,6 +5,8 @@
 
 #include <SFML/Graphics.hpp>
 
+#include <array>
+
 class LineGraph final : public sf::Drawable, private sf::Transformable
 {
 private:
