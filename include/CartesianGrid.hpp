@@ -1,13 +1,11 @@
 #pragma once
 
-#include "CartesianCoordinateSystem.hpp"
-
 #include <SFML/Graphics.hpp>
 
 class CartesianGrid : public sf::Drawable
 {
 public:
-	CartesianGrid(CartesianCoordinateSystem& ccs, sf::Vector2f gap = {1, 1}, sf::FloatRect viewRegion = {0, 0, 0, 0});
+	CartesianGrid(sf::Vector2f gap = {1, 1}, sf::FloatRect viewRegion = {0, 0, 0, 0});
 
 	sf::Vector2f getGap() const;
 	void setGap(const sf::Vector2f& gap);
@@ -27,7 +25,6 @@ public:
 	void setStretchTransform(const sf::Transform& transform);
 
 private:
-	CartesianCoordinateSystem& ccs;
 	sf::FloatRect viewRect;
 
 	sf::Vector2f gap;

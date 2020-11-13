@@ -1,6 +1,5 @@
 #pragma once
 
-#include "CartesianCoordinateSystem.hpp"
 #include "CartesianGrid.hpp"
 #include "CartesianGraph.hpp"
 

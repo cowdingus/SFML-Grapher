@@ -9,8 +9,7 @@ void CartesianGrid::createHorizontalLine(float yPosition, const Span& xViewSpan)
 	startPos = {xViewSpan.from, yPosition};
 	endPos = {xViewSpan.to, yPosition};
 
-	//sf::Transform transform = ccs.getTransform() * viewTransform.getInverse() * stretchTransform;
-	sf::Transform transform = ccs.getTransform() * stretchTransform * viewTransform.getInverse();
+	sf::Transform transform = stretchTransform * viewTransform.getInverse();
 	startPos = transform.transformPoint(startPos);
 	endPos = transform.transformPoint(endPos);
 
@@ -24,8 +23,7 @@ void CartesianGrid::createVerticalLine(float xPosition, const Span& yViewSpan)
 	startPos = {xPosition, yViewSpan.from};
 	endPos = {xPosition, yViewSpan.to};
 
-	//sf::Transform transform = ccs.getTransform() * viewTransform.getInverse() * stretchTransform;
-	sf::Transform transform = ccs.getTransform() * stretchTransform * viewTransform.getInverse();
+	sf::Transform transform = stretchTransform * viewTransform.getInverse();
 	startPos = transform.transformPoint(startPos);
 	endPos = transform.transformPoint(endPos);
 
@@ -86,8 +84,8 @@ void CartesianGrid::updateGrid()
 	createHorizontalLines(viewRegion);
 }
 
-CartesianGrid::CartesianGrid(CartesianCoordinateSystem& ccs, sf::Vector2f gap, sf::FloatRect viewRegion)
-	: ccs(ccs), gap(gap), viewRect(viewRegion)
+CartesianGrid::CartesianGrid(sf::Vector2f gap, sf::FloatRect viewRegion)
+	: viewRect(viewRegion), gap(gap)
 {
 
 }

@@ -1,15 +1,13 @@
 #pragma once
 
-#include "CartesianCoordinateSystem.hpp"
 #include "CartesianGrid.hpp"
+
+#include <SFML/Graphics.hpp>
 
 class CartesianGraph
 {
 public:
 	CartesianGraph();
-
-	void setUnitScaling(const sf::Vector2f& unitScaling);
-	sf::Vector2f getUnitScaling() const;
 
 	void setSize(sf::Vector2f size);
 	sf::Vector2f getSize() const;
@@ -42,7 +40,6 @@ public:
 protected:
 	sf::Vector2f getPointPosition(sf::Vector2f coords) const;
 
-	CartesianCoordinateSystem coordinateSystem;
 	CartesianGrid grid;
 
 	sf::FloatRect viewRect;

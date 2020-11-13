@@ -1,11 +1,7 @@
-#include "CartesianCoordinateSystem.hpp"
 #include "CartesianGrid.hpp"
 #include "LineGraph.hpp"
 
 #include <SFML/Graphics.hpp>
-#include <SFML/Graphics/Color.hpp>
-#include <SFML/Graphics/RectangleShape.hpp>
-#include <SFML/Window/Keyboard.hpp>
 #include <iostream>
 #include <cassert>
 
@@ -34,26 +30,6 @@ int main()
 	window.setVerticalSyncEnabled(true);
 
 	{
-		std::cout << "CCS Tests" << std::endl;
-		CartesianCoordinateSystem ccst;
-		ccst.setPosition({50, 50});
-		ccst.setScale({10, 10});
-
-		assert(ccst.mapToLocalCoords({50, 50}) == sf::Vector2f(0, 0));
-		assert(ccst.mapToWorldCoords({0, 0}) == sf::Vector2f(50, 50));
-		assert(ccst.mapToLocalCoords({60, 40}) == sf::Vector2f({1, 1}));
-		assert(ccst.mapToWorldCoords({1, 1}) == sf::Vector2f(60, 40));
-		std::cout << "CCS Unit Conversion Test Passed" << std::endl;
-
-		std::cout << ccst.getTransform() << std::endl;
-		std::cout << ccst.getAxisTransform() << std::endl;
-
-		assert(ccst.getAxisTransform() == sf::Transform().scale({10, -10}));
-		assert(ccst.getTransform() == sf::Transform().translate(50, 50).scale({10, -10}));
-		std::cout << "CCS Axis Transform Test Passed" << std::endl;
-	}
-
-	{
 		std::cout << "Graph Tests" << std::endl;
 		LineGraph lg;
 
@@ -70,64 +46,6 @@ int main()
 
 	std::cout << "All Tests Passed" << std::endl << std::endl;
 
-	CartesianCoordinateSystem ccs;
-	ccs.setPosition({50, 50});
-	ccs.setScale({10, 10});
-
-	std::cout << "CCS States" << std::endl
-	          << "Position" << '\t' << ccs.getPosition() << std::endl
-	          << "Scale" << '\t' << '\t' << ccs.getScale() << std::endl;
-
-	std::cout << ccs.mapToLocalCoords({50, 50});
-	std::cout << ccs.mapToWorldCoords({0, 0});
-
-	sf::Transform t = window.getView().getTransform();
-	std::cout << t.transformPoint(ccs.mapToWorldCoords({0, 0}));
-	std::cout << t.transformPoint(ccs.mapToWorldCoords({5, 5}));
-	std::cout << t.transformPoint(ccs.mapToWorldCoords({5, -5}));
-	std::cout << t.transformPoint(ccs.mapToWorldCoords({-5, -5}));
-	std::cout << t.transformPoint(ccs.mapToWorldCoords({-5, 5}));
-	std::cout << std::endl;
-
-	sf::VertexArray vertices(sf::Points, 5);
-	vertices[0].position = ccs.mapToWorldCoords({0, 0});
-	vertices[0].color = sf::Color::Blue;
-
-	vertices[1].position = ccs.mapToWorldCoords({1, 1});
-	vertices[2].position = ccs.mapToWorldCoords({1, -1});
-	vertices[3].position = ccs.mapToWorldCoords({-1, -1});
-	vertices[4].position = ccs.mapToWorldCoords({-1, 1});
-	vertices[1].color = sf::Color::Red;
-	vertices[2].color = sf::Color::Yellow;
-	vertices[3].color = sf::Color::Yellow;
-	vertices[4].color = sf::Color::Red;
-
-	CartesianCoordinateSystem ccs_normal;
-	ccs_normal.setPosition(50, 50);
-
-	sf::VertexArray vertices_normal(sf::Points, 5);
-	vertices_normal[0].position = ccs_normal.mapToWorldCoords({0, 0});
-	vertices_normal[0].color = sf::Color::Blue;
-
-	vertices_normal[1].position = ccs_normal.mapToWorldCoords({1, 1});
-	vertices_normal[2].position = ccs_normal.mapToWorldCoords({1, -1});
-	vertices_normal[3].position = ccs_normal.mapToWorldCoords({-1, -1});
-	vertices_normal[4].position = ccs_normal.mapToWorldCoords({-1, 1});
-	vertices_normal[1].color = sf::Color::Red;
-	vertices_normal[2].color = sf::Color::Yellow;
-	vertices_normal[3].color = sf::Color::Yellow;
-	vertices_normal[4].color = sf::Color::Red;
-
-	CartesianGrid cga(ccs);
-	cga.setGap({1, 1});
-	cga.setViewRegion({-5, -5, 10, 10});
-	cga.setColor(sf::Color::White);
-
-	CartesianGrid cg(ccs);
-	cg.setGap({1, 1});
-	cg.setViewRegion({0.75, 0.75, 2, 2});
-	cg.setColor(sf::Color::Blue);
-
 	LineGraph lg({400, 400});
 	lg.setPosition(100, 100);
 
@@ -137,10 +55,8 @@ int main()
 	lg.addPoint({0, -1});
 	lg.addPoint({0, 1});
 
-
-	lg.setZoom({2, 2});
-	lg.setUnitScaling({10, 10});
-	lg.setGridGap({2, 2});
+	lg.setZoom({2, 1});
+	lg.setGridGap({1, 1});
 	lg.setSize({200, 200});
 	lg.setGridColor(sf::Color(100, 100, 100));
 
@@ -246,10 +162,6 @@ int main()
 		lg.update();
 
 		window.clear();
-		window.draw(vertices);
-		window.draw(vertices_normal);
-		window.draw(cga);
-		window.draw(cg);
 		window.draw(lg);
 		window.draw(boundingBox);
 		window.draw(keymapGuide);

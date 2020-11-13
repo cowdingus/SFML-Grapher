@@ -1,9 +1,8 @@
 #include "CartesianGraph.hpp"
-#include "CartesianCoordinateSystem.hpp"
 #include "CartesianGrid.hpp"
+#include <SFML/Graphics/Transform.hpp>
 
 CartesianGraph::CartesianGraph()
-	: grid(coordinateSystem)
 {
 
 }
@@ -110,17 +109,6 @@ sf::Color CartesianGraph::getGridColor() const
 	return grid.getColor();
 }
 
-void CartesianGraph::setUnitScaling(const sf::Vector2f &unitScaling)
-{
-	coordinateSystem.setScale(unitScaling);
-	grid.update(true);
-}
-
-sf::Vector2f CartesianGraph::getUnitScaling() const
-{
-	return coordinateSystem.getScale();
-}
-
 void CartesianGraph::update()
 {
 	if (needUpdate)
@@ -133,10 +121,7 @@ void CartesianGraph::update()
 
 sf::Vector2f CartesianGraph::getPointPosition(sf::Vector2f coords) const
 {
-	//sf::Transform transform =
-	//    coordinateSystem.getTransform() * viewTransform.getInverseTransform() * stretchTransform.getTransform();
-	sf::Transform transform =
-	    coordinateSystem.getTransform() * stretchTransform.getTransform() * viewTransform.getInverseTransform();
+	sf::Transform transform = stretchTransform.getTransform() * viewTransform.getInverseTransform();
 	coords = transform.transformPoint(coords);
 	return coords;
 }
@@ -146,12 +131,9 @@ void CartesianGraph::recalculateStretchTransform(const sf::Vector2f& canvasViewS
 	// To achieve desired effect (zooming / resizing without stretching its content)
 	// we use this, a stretch transform.
 
-	sf::Vector2f canvasNormalSize =
-	    coordinateSystem.getInverseAxisTransform().transformPoint(canvasViewSize);
-
 	sf::Vector2f stretchScale(
-	    canvasNormalSize.x / viewRect.width,
-	    -(canvasNormalSize.y / viewRect.height)
+	    canvasViewSize.x / viewRect.width,
+	    -(canvasViewSize.y / viewRect.height)
 	);
 
 	stretchTransform.setScale(stretchScale);
