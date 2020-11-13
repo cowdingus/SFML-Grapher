@@ -12,7 +12,7 @@ public:
 	sf::Vector2f getUnitScaling() const;
 
 	void setSize(sf::Vector2f size);
-	sf::Vector2u getSize() const;
+	sf::Vector2f getSize() const;
 
 	void setZoom(sf::Vector2f zoom);
 	sf::Vector2f getZoom() const;
@@ -49,8 +49,7 @@ protected:
 	sf::Transformable viewTransform;    // What handles the view position, scale, rotation
 	sf::Transformable stretchTransform; // Prevents the graph from stretching when zooming in/out
 
-	sf::RenderTexture canvas;
-	sf::Sprite display;
+	sf::Vector2f size;
 
 	bool needUpdate = true;
 

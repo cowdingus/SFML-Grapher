@@ -5,13 +5,27 @@
 
 LineGraph::LineGraph()
 {
-
 }
 
 LineGraph::LineGraph(sf::Vector2f size)
 {
 	setViewSize(size);
 	setSize(size);
+}
+
+void LineGraph::setSize(const sf::Vector2f& size)
+{
+	if (!canvas.create(size.x, size.y))
+	{
+		sf::err() << "Can't create graph canvas!" << std::endl;
+	}
+	else
+	{
+		canvas.setView(sf::View({0, -size.y, size.x, size.y}));
+		display.setTexture(canvas.getTexture(), true);
+
+		CartesianGraph::setSize(size);
+	}
 }
 
 sf::Vector2f LineGraph::getPoint(std::size_t index) const

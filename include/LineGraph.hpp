@@ -15,6 +15,8 @@ public:
 
 	LineGraph(sf::Vector2f size);
 
+	void setSize(const sf::Vector2f& size);
+
 	sf::Vector2f getPoint(std::size_t index) const;
 	std::size_t getPointsCount() const;
 	void addPoint(sf::Vector2f datum);
@@ -32,6 +34,9 @@ private:
 	sf::VertexArray mesh = sf::VertexArray(sf::Quads);
 
 	bool needUpdate = true;
+
+	sf::RenderTexture canvas;
+	sf::Sprite display;
 
 	struct Span
 	{

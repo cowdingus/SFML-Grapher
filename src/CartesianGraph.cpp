@@ -8,12 +8,12 @@ CartesianGraph::CartesianGraph()
 
 }
 
-void CartesianGraph::setViewSize(const sf::Vector2f& size)
+void CartesianGraph::setViewSize(const sf::Vector2f& viewSize)
 {
-	viewRect.width = size.x;
-	viewRect.height = size.y;
+	viewRect.width = viewSize.x;
+	viewRect.height = viewSize.y;
 	grid.setViewRegion(viewRect);
-	recalculateStretchTransform(static_cast<sf::Vector2f>(canvas.getSize()));
+	recalculateStretchTransform(size);
 	grid.setStretchTransform(stretchTransform.getTransform());
 	needUpdate = true;
 }
@@ -25,11 +25,7 @@ sf::Vector2f CartesianGraph::getViewSize() const
 
 void CartesianGraph::setSize(sf::Vector2f size)
 {
-	if (!canvas.create(static_cast<sf::Vector2u>(size).x, static_cast<sf::Vector2u>(size).y))
-	{
-		sf::err() << "Failed creating graph canvas!" << std::endl;
-		return;
-	}
+	this->size = size;
 
 	if (viewRect.width == 0 || viewRect.height == 0)
 	{
@@ -39,22 +35,15 @@ void CartesianGraph::setSize(sf::Vector2f size)
 		// Todo, generate default view instead of returning
 	}
 
-	// Instead of using view to zoom or translate, we use our own transform
-	// to pervents stretching, that's why we set the view to the default size (canvas size).
-	// take a look at #calculateStretchTransform(canvasSize) method
-	sf::Vector2f canvasSize = static_cast<sf::Vector2f>(canvas.getSize());
-	canvas.setView(sf::View({0, -canvasSize.y, canvasSize.x, canvasSize.y}));
-
-	recalculateStretchTransform(canvasSize);
+	recalculateStretchTransform(size);
 	grid.setStretchTransform(stretchTransform.getTransform());
 
-	display.setTexture(canvas.getTexture(), true);
 	needUpdate = true;
 }
 
-sf::Vector2u CartesianGraph::getSize() const
+sf::Vector2f CartesianGraph::getSize() const
 {
-	return canvas.getSize();
+	return size;
 }
 
 void CartesianGraph::setZoom(sf::Vector2f zoom)

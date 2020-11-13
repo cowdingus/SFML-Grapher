@@ -137,9 +137,10 @@ int main()
 	lg.addPoint({0, -1});
 	lg.addPoint({0, 1});
 
+
 	lg.setZoom({2, 2});
-	lg.setGridGap({2, 2});
 	lg.setUnitScaling({10, 10});
+	lg.setGridGap({2, 2});
 	lg.setSize({200, 200});
 	lg.setGridColor(sf::Color(100, 100, 100));
 
@@ -147,6 +148,7 @@ int main()
 	lg.setViewSize({8, 8});
 
 	lg.setViewRect({-2, -2, 8, 8});
+
 
 	sf::RectangleShape boundingBox;
 	boundingBox.setSize(static_cast<sf::Vector2f>(lg.getSize()));
