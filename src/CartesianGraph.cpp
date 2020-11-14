@@ -1,6 +1,7 @@
 #include "CartesianGraph.hpp"
 #include "CartesianGrid.hpp"
 #include <SFML/Graphics/Transform.hpp>
+#include <exception>
 
 CartesianGraph::CartesianGraph()
 {
@@ -47,7 +48,9 @@ sf::Vector2f CartesianGraph::getSize() const
 
 void CartesianGraph::setZoom(sf::Vector2f zoom)
 {
+	if (zoom.x == 0 || zoom.y == 0) throw "Division by 0 error";
 	viewTransform.setScale({1 / zoom.x, 1 / zoom.y});
+	if (viewTransform.getScale().x == 0.f || viewTransform.getScale().y == 0.f) throw "Division by non-0 resulted in 0";
 	grid.setViewTransform(viewTransform.getTransform());
 	needUpdate = true;
 }
