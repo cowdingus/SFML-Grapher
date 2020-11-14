@@ -12,6 +12,7 @@ void CartesianGraph::setViewSize(const sf::Vector2f& viewSize)
 {
 	viewRect.width = viewSize.x;
 	viewRect.height = viewSize.y;
+	viewTransform.setOrigin(viewSize.x / 2, viewSize.y / 2);
 	grid.setViewRegion(viewRect);
 	recalculateStretchTransform(size);
 	grid.setStretchTransform(stretchTransform.getTransform());
