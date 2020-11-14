@@ -1,3 +1,12 @@
+/*
+ * ToDo:
+ *   look at @setSize implementation
+ *   fix bugs
+ *
+ * Bugs Found:
+ *   crashes and hangs the whole computer when setting zoom value to some little value
+ */
+
 #include "CartesianGrid.hpp"
 #include "LineGraph.hpp"
 
@@ -41,7 +50,29 @@ int main()
 		assert(lg.getPoint(0) == sf::Vector2f(1, 1));
 		lg.clearPoints();
 		assert(lg.getPointsCount() == 0);
-		std::cout << "Graph Data Insertion/Deletion Test Passed" << std::endl;
+		std::cout << "Graph Data Insertion/Deletion Tests Passed" << std::endl;
+
+		lg.setPosition(100, 100);
+		assert(lg.getPosition() == sf::Vector2f(100, 100));
+		lg.setSize({100, 100});
+		assert(lg.getSize() == sf::Vector2f(100, 100));
+		lg.setGridColor(sf::Color::White);
+		assert(lg.getGridColor() == sf::Color::White);
+		lg.setGridGap({10, 10});
+		assert(lg.getGridGap() == sf::Vector2f(10, 10));
+		lg.setViewPosition({10, 10});
+		assert(lg.getViewPosition() == sf::Vector2f(10, 10));
+		lg.setViewRect({0, 0, 10, 10});
+		assert(lg.getViewRect() == sf::FloatRect(0, 0, 10, 10));
+		assert(lg.getViewPosition() == sf::Vector2f(0, 0));
+		assert(lg.getViewSize() == sf::Vector2f(10, 10));
+		lg.setViewPosition({10, 10});
+		assert(lg.getViewPosition() == sf::Vector2f(10, 10));
+		lg.setViewSize({10, 10});
+		assert(lg.getViewSize() == sf::Vector2f(10, 10));
+		lg.setZoom({10, 10});
+		assert(lg.getZoom() == sf::Vector2f(10, 10));
+		std::cout << "Visual Properties Tests Passed" << std::endl;
 	}
 
 	std::cout << "All Tests Passed" << std::endl << std::endl;
@@ -140,10 +171,10 @@ int main()
 					lg.moveViewPosition({0.1, 0});
 					break;
 				case sf::Keyboard::M:
-					if (lg.getZoom().x < 3 || lg.getZoom().y < 3) lg.setZoom(lg.getZoom() + sf::Vector2f(0.1f, 0.1f));
+					if (lg.getZoom().x < 3 && lg.getZoom().y < 3) lg.setZoom(lg.getZoom() + sf::Vector2f(0.1f, 0.1f));
 					break;
 				case sf::Keyboard::N:
-					if (lg.getZoom().x > 1 || lg.getZoom().y > 1) lg.setZoom(lg.getZoom() - sf::Vector2f(0.1f, 0.1f));
+					if (lg.getZoom().x > 1 && lg.getZoom().y > 1) lg.setZoom(lg.getZoom() - sf::Vector2f(0.1f, 0.1f));
 					break;
 				default:
 					break;
