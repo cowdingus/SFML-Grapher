@@ -7,7 +7,7 @@
 
 #include <array>
 
-class LineGraph final : public sf::Drawable, public CartesianGraph, private sf::Transformable
+class LineGraph final : public sf::Drawable, public CartesianGraph
 {
 public:
 	LineGraph();
@@ -21,8 +21,6 @@ public:
 	void addPoint(sf::Vector2f datum);
 	void removePoint(std::size_t index);
 	void clearPoints();
-
-	using sf::Transformable::setPosition;
 
 	void updateGraph() override;
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;

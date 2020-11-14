@@ -4,10 +4,13 @@
 
 #include <SFML/Graphics.hpp>
 
-class CartesianGraph
+class CartesianGraph : protected sf::Transformable
 {
 public:
 	CartesianGraph();
+
+	using sf::Transformable::setPosition;
+	using sf::Transformable::getPosition;
 
 	void setSize(sf::Vector2f size);
 	sf::Vector2f getSize() const;
