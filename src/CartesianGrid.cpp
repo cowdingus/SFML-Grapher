@@ -1,7 +1,27 @@
 #include "CartesianGrid.hpp"
+#include "CartesianGraphView.hpp"
 
 #include <SFML/Graphics/Rect.hpp>
 #include <cmath>
+
+void CartesianGrid::setSize(const sf::Vector2f& size)
+{
+	this->size = size;
+	recalculateStretchTransform();
+	needUpdate = true;
+}
+
+sf::Vector2f CartesianGrid::getSize() const
+{
+	return size;
+}
+
+void CartesianGrid::setView(const CartesianGraphView& view)
+{
+	this->view = view;
+	recalculateStretchTransform();
+	needUpdate = true;
+}
 
 void CartesianGrid::createHorizontalLine(float yPosition, const Span& xViewSpan)
 {
@@ -9,7 +29,7 @@ void CartesianGrid::createHorizontalLine(float yPosition, const Span& xViewSpan)
 	startPos = {xViewSpan.from, yPosition};
 	endPos = {xViewSpan.to, yPosition};
 
-	sf::Transform transform = stretchTransform * viewTransform.getInverse();
+	sf::Transform transform = stretchTransform.getTransform() * view.getInverseTransform();
 	startPos = transform.transformPoint(startPos);
 	endPos = transform.transformPoint(endPos);
 
@@ -23,7 +43,7 @@ void CartesianGrid::createVerticalLine(float xPosition, const Span& yViewSpan)
 	startPos = {xPosition, yViewSpan.from};
 	endPos = {xPosition, yViewSpan.to};
 
-	sf::Transform transform = stretchTransform * viewTransform.getInverse();
+	sf::Transform transform = stretchTransform.getTransform() * view.getInverseTransform();
 	startPos = transform.transformPoint(startPos);
 	endPos = transform.transformPoint(endPos);
 
@@ -75,19 +95,19 @@ void CartesianGrid::updateGrid()
 {
 	mesh.clear();
 
-	if ((viewRect.width * viewRect.height) == 0) return;
-
 	// calculate view area taking account of zooming, translation
-	sf::FloatRect viewRegion = viewTransform.transformRect(viewRect);
+	sf::FloatRect viewRegion = view.getViewRect();
+
+	if ((viewRegion.width * viewRegion.height) == 0) return;
 
 	createVerticalLines(viewRegion);
 	createHorizontalLines(viewRegion);
 }
 
 CartesianGrid::CartesianGrid(sf::Vector2f gap, sf::FloatRect viewRegion)
-	: viewRect(viewRegion), gap(gap)
+	: gap(gap)
 {
-
+	view.setViewRect(viewRegion);
 }
 
 sf::Vector2f CartesianGrid::getGap() const
@@ -97,26 +117,6 @@ sf::Vector2f CartesianGrid::getGap() const
 void CartesianGrid::setGap(const sf::Vector2f& gap)
 {
 	this->gap = gap;
-	needUpdate = true;
-}
-
-const sf::FloatRect& CartesianGrid::getViewRegion() const
-{
-	return viewRect;
-}
-void CartesianGrid::setViewRegion(const sf::FloatRect& viewRegion)
-{
-	this->viewRect = viewRegion;
-	needUpdate = true;
-}
-void CartesianGrid::setViewRegion(const sf::Vector2f& topLeftPosition, const sf::Vector2f& size)
-{
-	this->viewRect = {topLeftPosition.x, topLeftPosition.y, size.x, size.y};
-	needUpdate = true;
-}
-void CartesianGrid::moveViewRegion(const sf::Vector2f& offset)
-{
-	viewTransform.translate(offset);
 	needUpdate = true;
 }
 
@@ -147,13 +147,17 @@ void CartesianGrid::draw(sf::RenderTarget& target, sf::RenderStates states) cons
 	target.draw(mesh, states);
 }
 
-void CartesianGrid::setViewTransform(const sf::Transform& transform)
+void CartesianGrid::recalculateStretchTransform()
 {
-	viewTransform = transform;
-	needUpdate = true;
-}
-void CartesianGrid::setStretchTransform(const sf::Transform& transform)
-{
-	stretchTransform = transform;
-	needUpdate = true;
+	// To achieve desired effect (zooming / resizing without stretching its content)
+	// we use this, a stretch transform.
+
+	sf::FloatRect viewRect = view.getViewRect();
+
+	sf::Vector2f stretchScale(
+	    size.x / viewRect.width,
+	    -(size.y / viewRect.height)
+	);
+
+	stretchTransform.setScale(stretchScale);
 }
