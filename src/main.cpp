@@ -7,10 +7,12 @@
  *   crashes and hangs the whole computer when setting zoom value to some little value
  */
 
+#include "CartesianGraphView.hpp"
 #include "CartesianGrid.hpp"
 #include "LineGraph.hpp"
 
 #include <SFML/Graphics.hpp>
+#include <SFML/Window/ContextSettings.hpp>
 #include <iostream>
 #include <cassert>
 
@@ -18,6 +20,12 @@ template<typename T>
 std::ostream& operator<<(std::ostream& out, const sf::Vector2<T>& vector)
 {
 	return out << "{" << vector.x << ", " << vector.y << "}";
+}
+
+template<typename T>
+std::ostream& operator<<(std::ostream& out, const sf::Rect<T>& rect)
+{
+	return out << "{" << rect.left << ", " << rect.top << ", " << rect.width << ", " << rect.height << "}" << std::endl;
 }
 
 std::ostream& operator<<(std::ostream& out, const sf::Transform& transform)
@@ -34,9 +42,11 @@ std::ostream& operator<<(std::ostream& out, const sf::Transform& transform)
 
 int main()
 {
-	sf::RenderWindow window(sf::VideoMode(800, 600), "NULL");
+	sf::ContextSettings settings;
+	settings.antialiasingLevel = 4;
+
+	sf::RenderWindow window(sf::VideoMode(800, 600), "NULL", sf::Style::Default, settings);
 	window.setFramerateLimit(15);
-	window.setVerticalSyncEnabled(true);
 
 	{
 		std::cout << "Graph Tests" << std::endl;
@@ -52,27 +62,48 @@ int main()
 		assert(lg.getPointsCount() == 0);
 		std::cout << "Graph Data Insertion/Deletion Tests Passed" << std::endl;
 
-		lg.setPosition(100, 100);
-		assert(lg.getPosition() == sf::Vector2f(100, 100));
-		lg.setSize({100, 100});
-		assert(lg.getSize() == sf::Vector2f(100, 100));
 		lg.setGridColor(sf::Color::White);
 		assert(lg.getGridColor() == sf::Color::White);
 		lg.setGridGap({10, 10});
 		assert(lg.getGridGap() == sf::Vector2f(10, 10));
-		lg.setViewPosition({10, 10});
-		assert(lg.getViewPosition() == sf::Vector2f(10, 10));
-		lg.setViewRect({0, 0, 10, 10});
-		assert(lg.getViewRect() == sf::FloatRect(0, 0, 10, 10));
-		assert(lg.getViewPosition() == sf::Vector2f(0, 0));
-		assert(lg.getViewSize() == sf::Vector2f(10, 10));
-		lg.setViewPosition({10, 10});
-		assert(lg.getViewPosition() == sf::Vector2f(10, 10));
-		lg.setViewSize({10, 10});
-		assert(lg.getViewSize() == sf::Vector2f(10, 10));
-		lg.setZoom({10, 10});
-		assert(lg.getZoom() == sf::Vector2f(10, 10));
+
+		CartesianGraphView view = lg.getView();
+		view.setViewRect({0, 0, 10, 10});
+
+		lg.setView(view);
+
+		std::cout << lg.getView().getViewRect() << std::endl;
+		assert(lg.getView().getViewRect() == sf::FloatRect(0, 0, 10, 10));
+
 		std::cout << "Visual Properties Tests Passed" << std::endl;
+	}
+
+	{
+		std::cout << "Graph View Tests" << std::endl;
+		CartesianGraphView view;
+
+		view.setCenter({100, 100});
+		assert(view.getCenter() == sf::Vector2f(100, 100));
+		view.setSize({100, 100});
+		assert(view.getSize() == sf::Vector2f(100, 100));
+		view.setViewRect({0, 0, 10, 10});
+		assert(view.getViewRect() == sf::FloatRect(0, 0, 10, 10));
+		assert(view.getCenter() == sf::Vector2f(5, 5));
+		assert(view.getSize() == sf::Vector2f(10, 10));
+		view.setCenter({10, 10});
+		assert(view.getCenter() == sf::Vector2f(10, 10));
+		view.setSize({10, 10});
+		assert(view.getSize() == sf::Vector2f(10, 10));
+		view.setZoom({10, 10});
+		assert(view.getZoom() == sf::Vector2f(10, 10));
+
+		view = CartesianGraphView();
+
+		view.setCenter({1, 1});
+		view.setSize({2, 2});
+
+		std::cout << view.getTransform() * sf::Vector2f(0, 0) << std::endl;
+		assert(view.getTransform() * sf::Vector2f(0, 0) == sf::Vector2f(0, 0));
 	}
 
 	std::cout << "All Tests Passed" << std::endl << std::endl;
@@ -86,16 +117,25 @@ int main()
 	lg.addPoint({0, -1});
 	lg.addPoint({0, 1});
 
-	lg.setZoom({2, 1});
+	lg.addPoint({0, 2});
+	lg.addPoint({-3, 0});
+
 	lg.setGridGap({1, 1});
-	lg.setSize({200, 200});
 	lg.setGridColor(sf::Color(100, 100, 100));
 
-	lg.setViewPosition({-2, -2});
-	lg.setViewSize({8, 8});
+	CartesianGraphView lgv;
 
-	lg.setViewRect({-2, -2, 8, 8});
+	lgv.setCenter({-2, -2});
+	lgv.setSize({8, 8});
 
+	lgv.setViewRect({-2, -2, 8, 8});
+
+	lgv.setCenter({0, 0});
+	lgv.setSize({10, 10});
+
+	lg.setView(lgv);
+
+	lg.setSize({200, 200});
 
 	sf::RectangleShape boundingBox;
 	boundingBox.setSize(static_cast<sf::Vector2f>(lg.getSize()));
@@ -143,6 +183,7 @@ int main()
 			case sf::Event::KeyPressed:
 			{
 				sf::View newView = window.getView();
+				CartesianGraphView graphView = lg.getView();
 
 				switch (event.key.code)
 				{
@@ -159,26 +200,30 @@ int main()
 					newView.move(10, 0);
 					break;
 				case sf::Keyboard::Up:
-					lg.moveViewPosition({0, 0.1});
+					graphView.move({0, 0.1});
 					break;
 				case sf::Keyboard::Down:
-					lg.moveViewPosition({0, -0.1});
+					graphView.move({0, -0.1});
 					break;
 				case sf::Keyboard::Left:
-					lg.moveViewPosition({-0.1, 0});
+					graphView.move({-0.1, 0});
 					break;
 				case sf::Keyboard::Right:
-					lg.moveViewPosition({0.1, 0});
+					graphView.move({0.1, 0});
 					break;
 				case sf::Keyboard::M:
-					if (lg.getZoom().x < 3 && lg.getZoom().y < 3) lg.setZoom(lg.getZoom() + sf::Vector2f(0.1f, 0.1f));
+					if (graphView.getZoom().x < 3 && graphView.getZoom().y < 3)
+						graphView.setZoom(graphView.getZoom() + sf::Vector2f(0.1f, 0.1f));
 					break;
 				case sf::Keyboard::N:
-					if (lg.getZoom().x > 1 && lg.getZoom().y > 1) lg.setZoom(lg.getZoom() - sf::Vector2f(0.1f, 0.1f));
+					if (graphView.getZoom().x > 1 && graphView.getZoom().y > 1)
+						graphView.setZoom(graphView.getZoom() - sf::Vector2f(0.1f, 0.1f));
 					break;
 				default:
 					break;
 				}
+
+				lg.setView(graphView);
 
 				window.setView(newView);
 				break;
