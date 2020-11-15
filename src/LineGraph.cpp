@@ -9,7 +9,7 @@ LineGraph::LineGraph()
 
 LineGraph::LineGraph(sf::Vector2f size)
 {
-	setViewSize(size);
+	view.setSize(size);
 	setSize(size);
 }
 
@@ -101,8 +101,7 @@ void LineGraph::updateContent()
 	mesh.clear();
 
 	// Determine how big we can see taking account of the zooming and translation
-	sf::Transform transform = viewTransform.getTransform();
-	sf::FloatRect viewRegion = transform.transformRect(viewRect);
+	sf::FloatRect viewRegion = view.getViewRect();
 
 	for (auto& datum : graphPoints)
 	{
