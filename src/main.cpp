@@ -9,7 +9,7 @@
 
 #include "CartesianGraphView.hpp"
 #include "CartesianGrid.hpp"
-#include "LineGraph.hpp"
+#include "DotGraph.hpp"
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Window/ContextSettings.hpp>
@@ -50,7 +50,7 @@ int main()
 
 	{
 		std::cout << "Graph Tests" << std::endl;
-		LineGraph lg;
+		DotGraph lg;
 
 		lg.addPoint({1, 1});
 		assert(lg.getPoint(0) == sf::Vector2f(1, 1));
@@ -108,7 +108,7 @@ int main()
 
 	std::cout << "All Tests Passed" << std::endl << std::endl;
 
-	LineGraph lg({400, 400});
+	DotGraph lg({400, 400});
 	lg.setPosition(100, 100);
 
 	lg.addPoint({0, 0});
