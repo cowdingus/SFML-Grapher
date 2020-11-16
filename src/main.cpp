@@ -67,6 +67,9 @@ int main()
 		lg.setGridGap({10, 10});
 		assert(lg.getGridGap() == sf::Vector2f(10, 10));
 
+		lg.setColor(sf::Color::Black);
+		assert(lg.getColor() == sf::Color::Black);
+
 		CartesianGraphView view = lg.getView();
 		view.setViewRect({0, 0, 10, 10});
 
@@ -136,6 +139,7 @@ int main()
 	lg.setView(lgv);
 
 	lg.setSize({200, 200});
+	lg.setColor(sf::Color::Cyan);
 
 	sf::RectangleShape boundingBox;
 	boundingBox.setSize(static_cast<sf::Vector2f>(lg.getSize()));

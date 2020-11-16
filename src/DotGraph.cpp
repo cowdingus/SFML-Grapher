@@ -56,6 +56,21 @@ std::size_t DotGraph::getPointsCount() const
 	return graphPoints.size();
 }
 
+void DotGraph::setColor(sf::Color color)
+{
+	dotColor = color;
+
+	for (std::size_t i; i < mesh.getVertexCount(); ++i)
+	{
+		mesh[i].color = dotColor;
+	}
+}
+
+sf::Color DotGraph::getColor() const
+{
+	return dotColor;
+}
+
 void DotGraph::updateGraph()
 {
 	if (needUpdate)
@@ -88,11 +103,12 @@ void DotGraph::createPoint(const sf::Vector2f& coords)
 	dotTransform.scale({9, 9});
 
 	// Transform the dot to the desired coords
-	for (auto& vertx : newDot)
+	for (auto& vertex : newDot)
 	{
-		vertx.position = dotTransform.transformPoint(vertx.position);
+		vertex.position = dotTransform.transformPoint(vertex.position);
+		vertex.color = dotColor;
 
-		mesh.append(vertx);
+		mesh.append(vertex);
 	}
 }
 

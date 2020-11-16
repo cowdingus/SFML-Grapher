@@ -22,6 +22,9 @@ public:
 	void removePoint(std::size_t index);
 	void clearPoints();
 
+	void setColor(sf::Color dotColor);
+	sf::Color getColor() const;
+
 	void updateGraph() override;
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
@@ -34,6 +37,8 @@ private:
 
 	sf::RenderTexture canvas;
 	sf::Sprite display;
+
+	sf::Color dotColor;
 
 	struct Span
 	{
