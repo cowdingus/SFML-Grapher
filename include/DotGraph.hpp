@@ -7,12 +7,12 @@
 
 #include <array>
 
-class LineGraph final : public sf::Drawable, public CartesianGraph
+class DotGraph final : public sf::Drawable, public CartesianGraph
 {
 public:
-	LineGraph();
+	DotGraph();
 
-	LineGraph(sf::Vector2f size);
+	DotGraph(sf::Vector2f size);
 
 	void setSize(const sf::Vector2f& size);
 

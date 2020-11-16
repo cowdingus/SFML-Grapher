@@ -1,19 +1,19 @@
-#include "LineGraph.hpp"
+#include "DotGraph.hpp"
 #include "CartesianGraph.hpp"
 
 #include <SFML/System/Vector2.hpp>
 
-LineGraph::LineGraph()
+DotGraph::DotGraph()
 {
 }
 
-LineGraph::LineGraph(sf::Vector2f size)
+DotGraph::DotGraph(sf::Vector2f size)
 {
 	view.setSize(size);
 	setSize(size);
 }
 
-void LineGraph::setSize(const sf::Vector2f& size)
+void DotGraph::setSize(const sf::Vector2f& size)
 {
 	if (!canvas.create(size.x, size.y))
 	{
@@ -28,35 +28,35 @@ void LineGraph::setSize(const sf::Vector2f& size)
 	}
 }
 
-sf::Vector2f LineGraph::getPoint(std::size_t index) const
+sf::Vector2f DotGraph::getPoint(std::size_t index) const
 {
 	return graphPoints[index];
 }
 
-void LineGraph::addPoint(sf::Vector2f datum)
+void DotGraph::addPoint(sf::Vector2f datum)
 {
 	graphPoints.emplace_back(datum.x, datum.y);
 	needUpdate = true;
 }
 
-void LineGraph::removePoint(std::size_t index)
+void DotGraph::removePoint(std::size_t index)
 {
 	graphPoints.erase(graphPoints.begin() + index);
 	needUpdate = true;
 }
 
-void LineGraph::clearPoints()
+void DotGraph::clearPoints()
 {
 	graphPoints.clear();
 	needUpdate = true;
 }
 
-std::size_t LineGraph::getPointsCount() const
+std::size_t DotGraph::getPointsCount() const
 {
 	return graphPoints.size();
 }
 
-void LineGraph::updateGraph()
+void DotGraph::updateGraph()
 {
 	if (needUpdate)
 	{
@@ -66,14 +66,14 @@ void LineGraph::updateGraph()
 	updateCanvas();
 }
 
-void LineGraph::draw(sf::RenderTarget& target, sf::RenderStates states) const
+void DotGraph::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	states.transform *= getTransform();
 
 	target.draw(display, states);
 }
 
-void LineGraph::createPoint(const sf::Vector2f& coords)
+void DotGraph::createPoint(const sf::Vector2f& coords)
 {
 	auto newDot = dot;
 
@@ -96,7 +96,7 @@ void LineGraph::createPoint(const sf::Vector2f& coords)
 	}
 }
 
-void LineGraph::updateContent()
+void DotGraph::updateContent()
 {
 	mesh.clear();
 
@@ -118,7 +118,7 @@ void LineGraph::updateContent()
 	}
 }
 
-void LineGraph::updateCanvas()
+void DotGraph::updateCanvas()
 {
 	canvas.clear();
 	canvas.draw(grid);
