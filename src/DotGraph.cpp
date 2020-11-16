@@ -9,7 +9,6 @@ DotGraph::DotGraph()
 
 DotGraph::DotGraph(sf::Vector2f size)
 {
-	view.setSize(size);
 	setSize(size);
 }
 
