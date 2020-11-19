@@ -4,6 +4,9 @@ A simple Grapher made with SFML.
 ## Usage
 Just copy the files into your project. Feel free to modify anything. No need to copy the LICENSE.
 
+## How to code custom graph
+Coming soon!
+
 ## Current Graph Types
 * Dot Graph<br>
 ![A dot graph in action](https://media.giphy.com/media/2OQIIPKiB6Vly9KPnI/giphy.gif)
