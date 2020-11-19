@@ -133,9 +133,9 @@ void CartesianGrid::setColor(sf::Color color)
 	}
 }
 
-void CartesianGrid::update(bool force)
+void CartesianGrid::update()
 {
-	if (needUpdate || force)
+	if (needUpdate)
 	{
 		updateGrid();
 		needUpdate = false;

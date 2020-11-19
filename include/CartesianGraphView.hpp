@@ -26,9 +26,6 @@ public:
 
 private:
 	sf::Vector2f viewSize;
-	sf::Vector2f position;
-	sf::Vector2f scaling;
-	sf::Vector2f origin;
 
 	sf::Transformable transform;
 };

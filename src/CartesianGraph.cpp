@@ -14,7 +14,6 @@ void CartesianGraph::setView(const CartesianGraphView& view)
 	this->view = view;
 	grid.setView(view);
 	recalculateStretchTransform();
-	needUpdate = true;
 }
 
 const CartesianGraphView& CartesianGraph::getView() const
@@ -24,22 +23,29 @@ const CartesianGraphView& CartesianGraph::getView() const
 
 void CartesianGraph::setSize(sf::Vector2f size)
 {
-	this->size = size;
-	grid.setSize(size);
-
-	sf::FloatRect viewRect = view.getViewRect();
-
-	if (viewRect.width == 0 || viewRect.height == 0)
+	if (!canvas.create(size.x, size.y))
 	{
-		sf::err() << "Invalid view rect size, using default rect size" << std::endl;
-
-		// Todo, generate default view instead of returning
-		view.setViewRect({0, 0, size.x, size.y});
+		throw "Can't create graph canvas!";
 	}
+	else
+	{
+		canvas.setView(sf::View({0, -size.y, size.x, size.y}));
+		display.setTexture(canvas.getTexture(), true);
+		display.setPosition(size.x / 2, size.y / 2);
 
-	recalculateStretchTransform();
+		this->size = size;
+		grid.setSize(size);
 
-	needUpdate = true;
+		sf::FloatRect viewRect = view.getViewRect();
+
+		// If view rect are not set, set default
+		if (viewRect.width == 0 || viewRect.height == 0)
+		{
+			view.setViewRect({0, 0, size.x, size.y});
+		}
+
+		recalculateStretchTransform();
+	}
 }
 
 sf::Vector2f CartesianGraph::getSize() const
@@ -69,12 +75,8 @@ sf::Color CartesianGraph::getGridColor() const
 
 void CartesianGraph::update()
 {
-	if (needUpdate)
-	{
-		needUpdate = false;
-	}
 	grid.update();
-	updateGraph();
+	updateContent();	
 }
 
 sf::Vector2f CartesianGraph::getPointPosition(sf::Vector2f coords) const
@@ -97,6 +99,12 @@ void CartesianGraph::recalculateStretchTransform()
 	);
 
 	stretchTransform.setScale(stretchScale);
+}
+
+void CartesianGraph::draw(sf::RenderTarget& target, sf::RenderStates states) const
+{
+	render(canvas);
+	target.draw(display, states);
 }
 
 CartesianGraph::~CartesianGraph() {}

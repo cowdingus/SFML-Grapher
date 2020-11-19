@@ -21,7 +21,7 @@ public:
 	sf::Color getColor() const;
 	void setColor(sf::Color color);
 
-	void update(bool force = false);
+	void update();
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 private:

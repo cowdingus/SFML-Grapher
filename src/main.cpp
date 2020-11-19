@@ -136,6 +136,8 @@ int main()
 	lgv.setCenter({0, 0});
 	lgv.setSize({10, 10});
 
+	lgv.setZoom({2,1});
+
 	lg.setView(lgv);
 
 	lg.setSize({200, 200});

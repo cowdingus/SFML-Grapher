@@ -26,24 +26,20 @@ public:
 	sf::Color getGridColor() const;
 
 	void update();
-	virtual void updateGraph() = 0;
 
-	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override = 0;
+	void draw(sf::RenderTarget& target, sf::RenderStates states) const override final;
 
 	virtual ~CartesianGraph();
 
 protected:
 	sf::Vector2f getPointPosition(sf::Vector2f coords) const;
 
-	CartesianGraphView view;
-	sf::Transformable stretchTransform; // Prevents the graph from stretching when zooming in/out
-
-	sf::Vector2f size;
-
-	CartesianGrid grid;
-
-	bool needUpdate = true;
+	virtual void render(sf::RenderTexture& graphCanvas) const = 0;
+	virtual void updateContent() = 0;
 	
+	CartesianGrid grid;
+	CartesianGraphView view;
+
 	struct Span
 	{
 		float from = 0;
@@ -52,4 +48,11 @@ protected:
 
 private:
 	void recalculateStretchTransform();
+	
+	mutable sf::RenderTexture canvas;
+	sf::Sprite display;
+	
+	sf::Transformable stretchTransform; // Prevents the graph from stretching when zooming in/out
+
+	sf::Vector2f size;	
 };
