@@ -7,7 +7,7 @@
 
 #include <array>
 
-class DotGraph final : public sf::Drawable, public CartesianGraph
+class DotGraph final : public CartesianGraph
 {
 public:
 	DotGraph();
@@ -39,12 +39,6 @@ private:
 	sf::Sprite display;
 
 	sf::Color dotColor;
-
-	struct Span
-	{
-		float from = 0;
-		float to = 0;
-	};
 
 	const std::array<sf::Vertex, 4> dot
 	{

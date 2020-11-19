@@ -5,7 +5,7 @@
 
 #include <SFML/Graphics.hpp>
 
-class CartesianGraph : protected sf::Transformable
+class CartesianGraph : public sf::Drawable, protected sf::Transformable
 {
 public:
 	CartesianGraph();
@@ -28,6 +28,8 @@ public:
 	void update();
 	virtual void updateGraph() = 0;
 
+	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override = 0;
+
 	virtual ~CartesianGraph();
 
 protected:
@@ -41,6 +43,12 @@ protected:
 	CartesianGrid grid;
 
 	bool needUpdate = true;
+	
+	struct Span
+	{
+		float from = 0;
+		float to = 0;
+	};
 
 private:
 	void recalculateStretchTransform();
