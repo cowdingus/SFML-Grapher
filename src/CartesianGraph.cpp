@@ -14,6 +14,7 @@ void CartesianGraph::setView(const CartesianGraphView& view)
 	this->view = view;
 	grid.setView(view);
 	recalculateStretchTransform();
+	needUpdate = true;
 }
 
 const CartesianGraphView& CartesianGraph::getView() const
@@ -31,7 +32,6 @@ void CartesianGraph::setSize(sf::Vector2f size)
 	{
 		canvas.setView(sf::View({0, -size.y, size.x, size.y}));
 		display.setTexture(canvas.getTexture(), true);
-		display.setPosition(size.x / 2, size.y / 2);
 
 		this->size = size;
 		grid.setSize(size);
@@ -76,7 +76,11 @@ sf::Color CartesianGraph::getGridColor() const
 void CartesianGraph::update()
 {
 	grid.update();
-	updateContent();	
+	if (needUpdate)
+	{
+		updateContent();
+		needUpdate = false;
+	}
 }
 
 sf::Vector2f CartesianGraph::getPointPosition(sf::Vector2f coords) const
@@ -103,6 +107,8 @@ void CartesianGraph::recalculateStretchTransform()
 
 void CartesianGraph::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
+	states.transform *= getTransform();
+
 	render(canvas);
 	target.draw(display, states);
 }

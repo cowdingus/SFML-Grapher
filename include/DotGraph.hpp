@@ -28,8 +28,6 @@ private:
 
 	sf::VertexArray mesh = sf::VertexArray(sf::Quads);
 
-	bool needUpdate = true;
-
 	sf::Color dotColor;
 
 	const std::array<sf::Vertex, 4> dot

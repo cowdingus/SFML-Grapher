@@ -40,6 +40,8 @@ protected:
 	CartesianGrid grid;
 	CartesianGraphView view;
 
+	bool needUpdate = true;
+
 	struct Span
 	{
 		float from = 0;
@@ -48,7 +50,7 @@ protected:
 
 private:
 	void recalculateStretchTransform();
-	
+
 	mutable sf::RenderTexture canvas;
 	sf::Sprite display;
 	

@@ -81,26 +81,18 @@ void DotGraph::createPoint(const sf::Vector2f& coords)
 
 void DotGraph::updateContent()
 {
-	if (needUpdate)
+	mesh.clear();
+
+	sf::FloatRect viewRect = view.getViewRect();
+
+	for (const auto& datum : graphPoints)
 	{
-		mesh.clear();
+		// If not in sight (not visible), ignore it
+		if (!viewRect.contains(datum))
+			continue;
 
-		// Determine how big we can see taking account of the zooming and translation
-		sf::FloatRect viewRegion = view.getViewRect();
-
-		for (auto& datum : graphPoints)
-		{
-			Span xViewSpan {viewRegion.left, viewRegion.left + viewRegion.width};
-			Span yViewSpan {viewRegion.top, viewRegion.top + viewRegion.height};
-
-			// If not in sight (not visible), ignore it
-			if (datum.x > xViewSpan.to || datum.x < xViewSpan.from ||
-			        datum.y > yViewSpan.to || datum.y < yViewSpan.from)
-				continue;
-
-			// If in sight (visible), draw it
-			createPoint(datum);
-		}
+		// If in sight (visible), draw it
+		createPoint(datum);
 	}
 }
 
