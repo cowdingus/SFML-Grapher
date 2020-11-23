@@ -10,6 +10,7 @@
 #include "CartesianGraphView.hpp"
 #include "CartesianGrid.hpp"
 #include "DotGraph.hpp"
+#include "LineGraph.hpp"
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Window/ContextSettings.hpp>
@@ -111,8 +112,9 @@ int main()
 
 	std::cout << "All Tests Passed" << std::endl << std::endl;
 
-	DotGraph lg({400, 400});
-	lg.setPosition(100, 100);
+	DotGraph lg({200, 200});
+	lg.setPosition(50, 100);
+	lg.setColor(sf::Color::Cyan);
 
 	lg.addPoint({0, 0});
 	lg.addPoint({-1, 0});
@@ -128,11 +130,6 @@ int main()
 
 	CartesianGraphView lgv;
 
-	lgv.setCenter({-2, -2});
-	lgv.setSize({8, 8});
-
-	lgv.setViewRect({-2, -2, 8, 8});
-
 	lgv.setCenter({0, 0});
 	lgv.setSize({10, 10});
 
@@ -140,15 +137,44 @@ int main()
 
 	lg.setView(lgv);
 
-	lg.setSize({200, 200});
-	lg.setColor(sf::Color::Cyan);
+	LineGraph lineGraph({200,200});
+	lineGraph.setPosition({550,100});
+	lineGraph.setLineThickness(3);
 
-	sf::RectangleShape boundingBox;
-	boundingBox.setSize(static_cast<sf::Vector2f>(lg.getSize()));
-	boundingBox.setPosition({100, 100});
-	boundingBox.setOutlineThickness(1);
-	boundingBox.setOutlineColor(sf::Color::Magenta);
-	boundingBox.setFillColor(sf::Color(0, 0, 0, 0));
+	lineGraph.setGridColor(sf::Color(100,100,100));
+	lineGraph.setGridGap({1,1});
+
+	CartesianGraphView lineGraphView = lineGraph.getView();
+	lineGraphView.setViewRect({-5,-5,10,10});
+	
+	lineGraph.setView(lineGraphView);
+
+	for (float i = -5; i <= 0; ++i)
+	{
+		lineGraph.addPoint({i,i});
+	}
+	for (float i = 0; i <= 2; ++i)
+	{
+		lineGraph.addPoint({i,-i});
+	}
+	for (float i = 2; i <= 5; ++i)
+	{
+		lineGraph.addPoint({i,i*2-6});
+	}
+
+	sf::RectangleShape lgBoundingBox;
+	lgBoundingBox.setSize(lg.getSize());
+	lgBoundingBox.setPosition(lg.getPosition());
+	lgBoundingBox.setOutlineThickness(1);
+	lgBoundingBox.setOutlineColor(sf::Color::Magenta);
+	lgBoundingBox.setFillColor(sf::Color(0, 0, 0, 0));
+
+	sf::RectangleShape lineGraphBoundingBox;
+	lineGraphBoundingBox.setSize(lineGraph.getSize());
+	lineGraphBoundingBox.setPosition(lineGraph.getPosition());
+	lineGraphBoundingBox.setOutlineThickness(1);
+	lineGraphBoundingBox.setOutlineColor(sf::Color::Magenta);
+	lineGraphBoundingBox.setFillColor(sf::Color(0,0,0,0));
 
 	sf::Font arial;
 	if (!arial.loadFromFile("debug/Arial.ttf"))
@@ -242,10 +268,13 @@ int main()
 		}
 
 		lg.update();
+		lineGraph.update();
 
 		window.clear();
+		window.draw(lgBoundingBox);
+		window.draw(lineGraphBoundingBox);
 		window.draw(lg);
-		window.draw(boundingBox);
+		window.draw(lineGraph);
 		window.draw(keymapGuide);
 		window.display();
 	}
